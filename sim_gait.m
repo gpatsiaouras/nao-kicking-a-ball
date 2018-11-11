@@ -371,41 +371,61 @@ end;
 if energy == 1000000
     disp('No results');
 else
-    % Plot angles over time.
-    subplot(3,2,1);
-    plot(time,movement(:,1), 'k-');
-    xlim([0,time(length(time))]);
-    xlabel('The angle of the leg over time.');
-
-    % Plot angle speed over time.
-    subplot(3,2,2);
-    plot(time,movement(:,2), 'k-');
-    xlim([0,time(length(time))]);
-    xlabel('The angle-speed of the leg over time.');
-
-    % Plot the gravitaional force on the leg.
-    subplot(3,2,3);
-    plot(time, grav_force, 'k-');
-    xlim([0,time(length(time))]);
-    xlabel('The redial force on the mass in the over time.');
-
-    % Plot the total force on the leg, including the force caused by the impulse.
-    subplot(3,2,4);
-    plot(time, tot_force, 'k-');
-    xlim([0,time(length(time))]);
-    xlabel('The total force including impulse force over time.');
-
+    subplot(2,1,1);
+    yyaxis left
+    plot(time,movement(:,1), 'b--o', time,movement(:,2), 'b-');
+    ylabel('Angle');
+    yyaxis right
+    plot(time,grav_force, 'r--o', time, tot_force, 'r-');
+    ylabel('Force');
+    legend('angle of leg over time','angle-speed of leg over time', 'radial force on mass over time', 'total force on leg including impulse force over time')
+    xlabel('Time');
+    
+    subplot(2,1,2);
+    yyaxis left; 
+    plot(angle, min(policy,1), 'b-');
+    ylabel('Leg policy');
+    yyaxis right; 
+    plot(angle, Dpolicy, 'r-');
+    legend('leg policy over angle','derivative of leg policy over angle'); 
+    xlabel('Angle');
+    
+    
+%     % Plot angles over time.
+%     subplot(3,2,1);
+%     plot(time,movement(:,1), 'k-');
+%     xlim([0,time(length(time))]);
+%     xlabel('The angle of the leg over time.');
+% 
+%     % Plot angle speed over time.
+%     subplot(3,2,2);
+%     plot(time,movement(:,2), 'k-');
+%     xlim([0,time(length(time))]);
+%     xlabel('The angle-speed of the leg over time.');
+% 
+%     % Plot the gravitaional force on the leg.
+%     subplot(3,2,3);
+%     plot(time, grav_force, 'k-');
+%     xlim([0,time(length(time))]);
+%     xlabel('The redial force on the mass in the over time.');
+% 
+%     % Plot the total force on the leg, including the force caused by the impulse.
+%     subplot(3,2,4);
+%     plot(time, tot_force, 'k-');
+%     xlim([0,time(length(time))]);
+%     xlabel('The total force including impulse force over time.');
+% 
     % Plot policy.
-    subplot(3,2,5);
-    plot(angle, min(policy,1), 'k-');
-    axis tight;
-    xlabel('The leg policy over the angle.');
-
-    % Plot policy.
-    subplot(3,2,6);
-    plot(angle, Dpolicy, 'k-');
-    axis tight;
-    xlabel('The derivative of the leg policy over the angle.');
+%      subplot(3,2,5);
+%      plot(angle, min(policy,1), 'k-');
+%      axis tight;
+%      xlabel('The leg policy over the angle.');
+% 
+%     % Plot policy.
+%     subplot(3,2,6);
+%     plot(angle, Dpolicy, 'k-');
+%     axis tight;
+%     xlabel('The derivative of the leg policy over the angle.');
     
     disp('Energy:');
     disp(energy);
