@@ -32,6 +32,7 @@ class Nao (Robot):
         self.sideStepRight = Motion('../../motions/SideStepRight.motion')
         self.turnLeft60 = Motion('../../motions/TurnLeft60.motion')
         self.turnRight60 = Motion('../../motions/TurnRight60.motion')
+        self.shoot2x = Motion('../../motions/Shoot2x.motion')
 
     def startMotion(self, motion):
         # interrupt current motion
@@ -320,6 +321,8 @@ class Nao (Robot):
                 self.startMotion(self.turnLeft60)
             elif key == Keyboard.RIGHT | Keyboard.SHIFT:
                 self.startMotion(self.turnRight60)
+            elif key == ord('Z'):
+                self.startMotion(self.shoot2x)
             elif key == ord('A'):
                 self.printAcceleration()
             elif key == ord('G'):
