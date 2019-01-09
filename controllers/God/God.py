@@ -21,7 +21,7 @@ message through an emitter or handle the position of Robot1.
 from controller import Supervisor
 from shapely.geometry import Point
 from shapely.geometry.polygon import Polygon
-
+import math
 
 
 class Driver (Supervisor):
@@ -36,6 +36,10 @@ class Driver (Supervisor):
         self.t_ball = self.ball.getField('translation')
         self.keyboard.enable(self.timeStep)
         self.keyboard = self.getKeyboard()
+        
+        # Store initial coordinates of ball
+        self.ballX = self.ball.getPosition()[0] # 0 is x
+        self.ballZ = self.ball.getPosition()[2] # 2 is z
 
     def run(self):
         self.displayHelp()
@@ -54,6 +58,9 @@ class Driver (Supervisor):
 
             # Perform a simulation step, quit the loop when
             # Webots is about to quit.
+            
+            self.calculate_velocity()
+
             if not self.goal:
                 self.is_goal()
             
@@ -65,6 +72,19 @@ class Driver (Supervisor):
             'Commands:\n'
             ' N for position informations\n'
         )
+    
+    def calculate_velocity(self):
+        diffX = math.fabs(self.ball.getPosition()[0] - self.ballX)
+        diffZ = math.fabs(self.ball.getPosition()[2] - self.ballZ)
+
+        difference = math.sqrt(math.pow(diffX, 2) - math.pow(diffZ, 2))
+        print("Ball moved: " + str(difference))
+
+        # Assign new position
+        self.ballX = self.ball.getPosition()[0]
+        self.ballZ = self.ball.getPosition()[2]
+        
+        
     def is_goal(self):
         _ball = self.t_ball.getSFVec3f()
         pos_ball = Point(_ball[0], _ball[2])
