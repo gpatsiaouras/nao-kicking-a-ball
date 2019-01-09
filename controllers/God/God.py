@@ -60,7 +60,8 @@ class Driver (Supervisor):
             # Webots is about to quit.
             
             self.calculate_velocity()
-
+            self.has_robot_fallen()
+            
             if not self.goal:
                 self.is_goal()
             
@@ -78,7 +79,7 @@ class Driver (Supervisor):
         diffZ = math.fabs(self.ball.getPosition()[2] - self.ballZ)
 
         difference = math.sqrt(math.pow(diffX, 2) - math.pow(diffZ, 2))
-        print("Ball moved: " + str(difference))
+        # print("Ball moved: " + str(difference))
 
         # Assign new position
         self.ballX = self.ball.getPosition()[0]
@@ -97,6 +98,12 @@ class Driver (Supervisor):
             # print("NO")
         return False
         
+    def has_robot_fallen(self):
+        nao_rotation = math.fabs(self.nao.getField('rotation').getSFRotation()[3])
+        difference_from_standing = math.fabs(1.5713445032482045 - nao_rotation)
+        if difference_from_standing > 1:
+            print("Robot fell")
+            
 
 controller = Driver()
 controller.initialization()
