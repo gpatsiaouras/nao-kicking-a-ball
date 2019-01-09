@@ -19,10 +19,15 @@ message through an emitter or handle the position of Robot1.
 """
 
 from controller import Supervisor
+from shapely.geometry import Point
+from shapely.geometry.polygon import Polygon
+
 
 
 class Driver (Supervisor):
     timeStep = 128
+    football_goal = Polygon([(4.57151, 0.8), (4.57151, -0.8), (5.04, -0.8), (5.04, 0.8)])
+    goal = False
 
     def initialization(self):
         self.nao = self.getFromDef('NAO')
@@ -38,15 +43,20 @@ class Driver (Supervisor):
         # Main loop.
         while True:
             # Deal with the pressed keyboard key.
-            k = self.keyboard.getKey()
-            if k == ord('N'):
-                translationValues = self.t_nao.getSFVec3f()
-                print(translationValues)
-                translationValues = self.t_ball.getSFVec3f()
-                print(translationValues)
+            # k = self.keyboard.getKey()
+            # if k == ord('N'):
+            
+            # print(polygon.contains(point))
+            # translationValues = self.t_nao.getSFVec3f()
+            # print(translationValues)
+            # translationValues = self.t_ball.getSFVec3f()
+            # print(translationValues)
 
             # Perform a simulation step, quit the loop when
             # Webots is about to quit.
+            if not self.goal:
+                self.is_goal()
+            
             if self.step(self.timeStep) == -1:
                 break
 
@@ -55,7 +65,18 @@ class Driver (Supervisor):
             'Commands:\n'
             ' N for position informations\n'
         )
-
+    def is_goal(self):
+        _ball = self.t_ball.getSFVec3f()
+        pos_ball = Point(_ball[0], _ball[2])
+        
+        if self.football_goal.contains(pos_ball):
+            self.goal = True
+            print("GOOOOOAAAAAL!!!")
+            return True
+        # else:
+            # print("NO")
+        return False
+        
 
 controller = Driver()
 controller.initialization()
