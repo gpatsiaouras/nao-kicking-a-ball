@@ -38,8 +38,7 @@ class Driver (Supervisor):
         self.keyboard = self.getKeyboard()
         
         # Store initial coordinates of ball
-        self.ballX = self.ball.getPosition()[0] # 0 is x
-        self.ballZ = self.ball.getPosition()[2] # 2 is z
+        self.old_ball_pos = self.ball.getPosition() # 0 is x, 2 is z
 
     def run(self):
         self.displayHelp()
@@ -75,15 +74,19 @@ class Driver (Supervisor):
         )
     
     def calculate_velocity(self):
-        diffX = math.fabs(self.ball.getPosition()[0] - self.ballX)
-        diffZ = math.fabs(self.ball.getPosition()[2] - self.ballZ)
-
-        difference = math.sqrt(math.pow(diffX, 2) - math.pow(diffZ, 2))
-        # print("Ball moved: " + str(difference))
+        pos = self.ball.getPosition()
+        diffX = math.fabs(pos[0] - self.old_ball_pos[0])
+        diffZ = math.fabs(pos[2] - self.old_ball_pos[2])
+        
+        try:
+            difference = math.sqrt(math.fabs(math.pow(diffX, 2) - math.pow(diffZ, 2)))
+        except:
+            print("Error! (diffX: "+str(diffX)+" - diffZ: "+str(diffZ)+")")
+            difference = 0
+        print("Ball moved: " + str(difference))
 
         # Assign new position
-        self.ballX = self.ball.getPosition()[0]
-        self.ballZ = self.ball.getPosition()[2]
+        self.old_ball_pos = pos
         
         
     def is_goal(self):
