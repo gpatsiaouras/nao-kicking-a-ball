@@ -39,6 +39,10 @@ class Driver (Supervisor):
         
         # Store initial coordinates of ball
         self.old_ball_pos = self.ball.getPosition() # 0 is x, 2 is z
+        
+        # Store the initial y
+        
+        self.init_y = self.t_nao.getSFVec3f()[1]
 
     def run(self):
         self.displayHelp()
@@ -83,7 +87,7 @@ class Driver (Supervisor):
         except:
             print("Error! (diffX: "+str(diffX)+" - diffZ: "+str(diffZ)+")")
             difference = 0
-        print("Ball moved: " + str(difference))
+        # print("Ball moved: " + str(difference))
 
         # Assign new position
         self.old_ball_pos = pos
@@ -102,10 +106,19 @@ class Driver (Supervisor):
         return False
         
     def has_robot_fallen(self):
-        nao_rotation = math.fabs(self.nao.getField('rotation').getSFRotation()[3])
-        difference_from_standing = math.fabs(1.5713445032482045 - nao_rotation)
-        if difference_from_standing > 1:
-            print("Robot fell")
+        y = self.t_nao.getSFVec3f()[1] # just y
+        tollerance = 0.1
+        if math.fabs(self.init_y - y) > tollerance:
+            print("Fallen !!! ")
+            return True
+        return False
+        
+        
+        
+        # nao_rotation = math.fabs(self.nao.getField('rotation').getSFRotation()[3])
+        # difference_from_standing = math.fabs(1.5713445032482045 - nao_rotation)
+        # if difference_from_standing > 1:
+            # print("Robot fell")
             
 
 controller = Driver()
