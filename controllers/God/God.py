@@ -399,7 +399,7 @@ class Driver (Supervisor):
 
 controller = Driver()
 controller.initialization()
-# controller.run()
+controller.run()
 # controller.only_run(21)
 # controller.run_the_best()
-controller.god.backup()
+# controller.god.backup()
