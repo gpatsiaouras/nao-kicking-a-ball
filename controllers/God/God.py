@@ -4,26 +4,32 @@ from shapely.geometry.polygon import Polygon
 import math
 import numpy as np
 import pickle
-import os, sys, random
+import os, sys, random, time
+from shutil import copyfile
+from distutils.dir_util import copy_tree
 
 class God:
     popolation_folder = "../../data/popolation/"
     individual_prename = "ind_"
     individual_file_format = ".motion"
-    max_generation = 100 # TODO: not used yet
+    max_generation = 100
+    backup_every = 50 # generations
+    backup_folder = "../../data/backup/"
 
     n_popolation = 100
     n_to_save = 10
 
     # motion file info/settings
-    column_to_evolve = [6,7,8,9,10,11]
+    # 11 = LAnkleRoll
+    column_to_evolve = [6,7,8,9,10]
 
-    def __init__(self):
-        print("God: I am the Alpha and the Omega")
+    def __init__(self, godFile):
+        print(": I am the Alpha and the Omega")
+        self.godFile = godFile
         self.popolate()
         self.scores = [0] * self.n_popolation
         self.current_individual = 0
-        self.n_generation = 0
+        self.n_generation = 1
 
     # are you passing to the next generation? then you should reinitialize some variables...
     def next_gen(self, selected):
@@ -46,7 +52,7 @@ class God:
 
     # kill the individual not selected, and repopolate
     def repopolate(self, selected):
-        print("God: Have a lot of children and grandchildren.")
+        print(": Have a lot of children and grandchildren.")
         for i in range(self.n_popolation):
             # I just skipt the number of the ones selected, so I don't have to rename or think to much about it
             if i in selected:
@@ -60,7 +66,7 @@ class God:
 
     # First initialization of the popolation
     def popolate(self):
-        print("God: Let the waters bring forth abundantly the moving creature that hath life")
+        print(": Let the waters bring forth abundantly the moving creature that hath life")
         adamo_filepath = "../../motions/Shoot.motion"
         for i in range(self.n_popolation):
             self.create_individual(adamo_filepath, i)
@@ -91,7 +97,7 @@ class God:
         self.close_motion_file(adamo, self.popolation_folder+self.individual_prename+str(i)+self.individual_file_format)
 
     def delete_not_selected(self, selected):
-        print("God: The end is now upon you.")
+        print(": The end is now upon you.")
 
         # selected contains the indeces of the selected ones
         for i in range(self.n_popolation):
@@ -109,7 +115,7 @@ class God:
         self.scores[self.current_individual-1] = score
         
     def wake_up(self):
-        # print("God: Sacrifice your first born in my name!")
+        # print(": Sacrifice your first born in my name!")
         self.current_individual += 1
 
         # I don't want to retest the ones already tested:
@@ -118,7 +124,15 @@ class God:
 
         # Have we finished to evaluate the current popolation?
         if self.current_individual > self.n_popolation:
-            print("God: Noah! Prepare the ark!")
+            print(": Noah! Prepare the ark, I have to pee...")
+
+            # backup time?
+            if self.n_generation % self.backup_every == 0:
+                self.backup()
+            # stop time?
+            if self.n_generation >= self.max_generation:
+                self.backup()
+                self.die()
 
             # now I should select and repopulate
             selected = self.selection()
@@ -152,33 +166,50 @@ class God:
         with open(filepath, "w+") as f:
             f.write('\n'.join(content))
 
+    #create a backup in data/backup
+    def backup(self):
+        timestr = time.strftime("%Y%m%d-%H%M%S")
+        backup_dst = self.backup_folder+timestr
+        backup_dst_pop = backup_dst + "/popolation/"
+
+        if not os.path.exists(self.backup_folder):
+            os.mkdir(self.backup_folder) # create the folder "backup" if doesn't exist....
+        if not os.path.exists(backup_dst):
+            os.mkdir(backup_dst)
+            os.mkdir(backup_dst_pop)
+        #copy the god file
+        copyfile(self.godFile, backup_dst+"/god.npy")
+        #copy the popolation folder
+        copy_tree(self.popolation_folder, backup_dst_pop)
 
 class Driver (Supervisor):
     timeStep = 128
-    MAX_TIME = 10 # Max seconds for simulate!
+    MAX_TIME = 12 # Max seconds for simulate!
     football_goal = Polygon([(4.57151, 0.8), (4.57151, -0.8), (5.04, -0.8), (5.04, 0.8)])
     football_goal_point = Point(4.806, 0)
     start_distance = 0 # between the ball and the center of the football goal
     goal = False
     fallen = False
-    godFile = "../../data/god.npy"
 
     # to calculate an average of the speed..
     speed_sum = 0
     speed_count = 0
     speed_max = 0
 
+    godFile = "../../data/god.npy" # this is the file where save the object god between simulations
 
     def initialization(self):
-
         if not os.path.exists(self.godFile):
-            self.god = God()
+            self.god = God(self.godFile)
         else:
             try:
                 self.loadGod()
             except: # nothing
                 print("Failed to load the last god : S")
-                sys.exit(0)
+                self.die()
+
+        # TODO This is for retrocompatibility, to remove:
+        self.god.godFile = self.godFile
 
         # to send messages
         self.emitter = self.getEmitter('emitter')
@@ -219,6 +250,11 @@ class Driver (Supervisor):
                 self.step(self.timeStep) # this is for flush the console output
                 break
 
+    def run_the_best(self):
+        max_score = max(self.god.scores)
+        i_best = self.god.scores.index(max_score)
+        print("The best one was "+str(i_best)+" (from 0 to x) with a score of "+str(max_score))
+        self.only_run(i_best)
 
     def run(self):
         self.god.wake_up()
@@ -303,10 +339,12 @@ class Driver (Supervisor):
         # Assign new position
         self.old_ball_pos = pos
 
-        self.speed_sum += difference
-        self.speed_count += 1
-        if difference > self.speed_max:
-            self.speed_max = difference
+        # check the average speed only if the ball hasn't scored yet
+        if not self.goal:
+            self.speed_sum += difference
+            self.speed_count += 1
+            if difference > self.speed_max:
+                self.speed_max = difference
 
         return difference
 
@@ -354,10 +392,14 @@ class Driver (Supervisor):
         score = goal_score * avg_speed*10 * self.speed_max / fallen_score
         return score
 
-
+    def die(self):
+        self.emitter.send("Sacrifice yourself in My Name!".encode('utf-8'))
+        sys.exit(0)
             
 
 controller = Driver()
 controller.initialization()
-controller.run()
-# controller.only_run(99)
+# controller.run()
+# controller.only_run(21)
+# controller.run_the_best()
+controller.god.backup()

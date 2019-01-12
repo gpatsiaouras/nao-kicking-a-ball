@@ -9,7 +9,11 @@ class Nao (Robot):
 
     def receive_motion_file(self):
         if self.receiver.getQueueLength() > 0:
-             return self.receiver.getData().decode('utf-8')
+            message = self.receiver.getData().decode('utf-8')
+            if message == "Sacrifice yourself in My Name!":
+                print("This wasn't real anyway...")
+                sys.exit(0)
+            return message
         else:
             print("No signs from God... does her exist?")
             return False
