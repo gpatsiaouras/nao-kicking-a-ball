@@ -15,6 +15,7 @@ class God:
     max_generation = 10000
     backup_every = 50 # generations
     backup_folder = "../../data/backup/"
+    adamo_filepath = "../../motions/Shoot.motion"
 
     n_popolation = 100
     n_to_save = 10
@@ -22,9 +23,10 @@ class God:
     # motion file info/settings
     # 11 = LAnkleRoll
     column_to_evolve = [6,7,8,9,10]
+    evolve_row_from_to = [10, -20] # start, at least 1, since the first row is the title in the motion file
 
     def __init__(self, godFile):
-        print(": I am the Alpha and the Omega")
+        print(": I am the Alpha and the Omega ( Initialized the God.py )")
         self.godFile = godFile
         self.popolate()
         self.scores = [0] * self.n_popolation
@@ -52,7 +54,7 @@ class God:
 
     # kill the individual not selected, and repopolate
     def repopolate(self, selected):
-        print(": Have a lot of children and grandchildren.")
+        print(": Have a lot of children and grandchildren. ( repopolating ) ")
         for i in range(self.n_popolation):
             # I just skipt the number of the ones selected, so I don't have to rename or think to much about it
             if i in selected:
@@ -66,24 +68,30 @@ class God:
 
     # First initialization of the popolation
     def popolate(self):
-        print(": Let the waters bring forth abundantly the moving creature that hath life")
-        adamo_filepath = "../../motions/Shoot.motion"
+        print(": Let the waters bring forth abundantly the moving creature that hath life ( initialization of the popolation )")
         for i in range(self.n_popolation):
-            self.create_individual(adamo_filepath, i)
+            self.create_individual(self.adamo_filepath, i)
 
 
     def create_individual(self, start_filename, i):
         adamo = self.open_motion_file(start_filename)
 
-        probability_to_change = 0.1
-        max_percentuage_to_change = 0.10 # 0.05 = 5%
-        min_change = 0.01
+        probability_to_change = 0.05
+        percentuage_to_change = range(5, 10 +1) # [from, to] 5% - 10% # need the +1
+        min_change = 0.01 # 0.1, not 1% !
 
-        for i_row in range(1, len(adamo)):
+        # to evolve only some columns
+        if self.evolve_row_from_to[1] < 0:
+            to = len(adamo) + self.evolve_row_from_to[1]
+        else:
+            to = self.evolve_row_from_to[1]
+
+        for i_row in range(self.evolve_row_from_to[0], to):
             for col in self.column_to_evolve:
                 if random.uniform(0,1) < probability_to_change:
                     # ok let's change it then...
-                    change = max_percentuage_to_change * float(adamo[i_row][col])
+                    perc_change = random.choice(range(percentuage_to_change[0], percentuage_to_change[1]))/100
+                    change = perc_change * float(adamo[i_row][col])
                     if change < min_change:
                         change = min_change
 
@@ -92,12 +100,23 @@ class God:
                         change = -change
 
                     # return in str, because it is much easier to save if is in string!
+                    original = adamo[i_row][col]
                     adamo[i_row][col] =  str(float(adamo[i_row][col]) + change)
+
+                    # let's propagate the change to the neighbors
+                    # just one row
+                    if i_row-1 > 0 and i_row+1 < len(adamo):
+                        # if (adamo[i_row-1][col] < original < adamo[i_row+1][col]) and not (adamo[i_row-1][col] < adamo[i_row][col] < adamo[i_row+1][col]):
+                        adamo[i_row - 1][col] = str(float(adamo[i_row - 1][col]) + change/2)
+                        adamo[i_row + 1][col] = str(float(adamo[i_row + 1][col]) + change/2)
+
+
+
 
         self.close_motion_file(adamo, self.popolation_folder+self.individual_prename+str(i)+self.individual_file_format)
 
     def delete_not_selected(self, selected):
-        print(": The end is now upon you.")
+        print(": The end is now upon you. ( selection of the best ones )")
 
         # selected contains the indeces of the selected ones
         for i in range(self.n_popolation):
@@ -124,7 +143,7 @@ class God:
 
         # Have we finished to evaluate the current popolation?
         if self.current_individual > self.n_popolation:
-            print(": Noah! Prepare the ark, I have to pee...")
+            print(": Noah! Prepare the ark, I have to pee... ( I evaluated all the popolation ) ")
 
             # backup time?
             if self.n_generation % self.backup_every == 0:
@@ -231,10 +250,16 @@ class Driver (Supervisor):
         # Store the initial y
         self.init_y = self.t_nao.getSFVec3f()[1]
 
+    def run_original(self):
+        self.only_run(-1)
+
     def only_run(self, num):
-        motion_file_evaluated = (self.god.popolation_folder+self.god.individual_prename+str(num)+self.god.individual_file_format).encode('utf-8')
+        if num == -1:
+            motion_file_evaluated = self.god.adamo_filepath
+        else:
+            motion_file_evaluated = (self.god.popolation_folder+self.god.individual_prename+str(num)+self.god.individual_file_format)
         print(motion_file_evaluated)
-        self.emitter.send(motion_file_evaluated)
+        self.emitter.send(motion_file_evaluated.encode('utf-8'))
 
         # Main loop.
         while self.step(self.timeStep) != -1:
@@ -399,5 +424,9 @@ controller = Driver()
 controller.initialization()
 controller.run()
 # controller.only_run(21)
+
+# to see the difference:
+# controller.run_original()
 # controller.run_the_best()
+
 # controller.god.backup()

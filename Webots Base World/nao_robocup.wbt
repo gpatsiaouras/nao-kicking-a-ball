@@ -17,8 +17,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.11678175231492514 0.9782277378856309 0.17155907191815023 4.068228880214992
-  position -0.664074996283198 1.5648831369626288 -1.8511211053939542
+  orientation 0.054436453858460174 0.9959751678781273 0.07120489773500008 3.8880911881078677
+  position 0.27054114603538704 1.1046007534244582 -2.6595126178658495
 }
 Background {
   skyColor [
@@ -34,9 +34,12 @@ RobotstadiumSoccerField {
   frame1Color 0.9 0.8 0.2
   frame2Color 0.2 0.4 0.8
 }
+DEF Ball Ball {
+  translation 1.7475012217063626 0.03239206322777712 0.03818880504172611
+}
 DEF NAO Robot {
-  translation 1.5819001661379917 0.3330680315547197 0.08191213244056841
-  rotation 0.9994954589701304 0.023481591823508993 0.021387901802719607 -1.5713480295920719
+  translation 1.575213448766519 0.295824091417527 0.08150151176198768
+  rotation -0.9996301278576762 -0.02049557511439777 -0.017875650477009983 1.5728255429791096
   children [
     DEF receiver Receiver {
     }
@@ -240,10 +243,12 @@ DEF NAO Robot {
     }
     DEF HeadYaw Hinge2Joint {
       jointParameters HingeJointParameters {
+        position -9.016336288691916e-12
         axis 0 0 1
         anchor 0 0 0.1265
       }
       jointParameters2 JointParameters {
+        position -7.430601954084003e-09
         axis 0 1 0
       }
       device [
@@ -478,14 +483,18 @@ DEF NAO Robot {
             4.09863e-05 -3.61413e-05 8.73519e-06
           ]
         }
+        linearVelocity -1.0148822398357482e-06 -7.517131099915658e-08 -4.038256463394845e-06
+        angularVelocity -5.182750765812929e-06 -9.247075998185178e-05 4.190901372247957e-06
       }
     }
     DEF RShoulderPitch Hinge2Joint {
       jointParameters HingeJointParameters {
+        position 2.0849999838849578
         axis 0 1 0
         anchor 0 -0.098 0.1
       }
       jointParameters2 JointParameters {
+        position -0.34899987708681607
       }
       device [
         RotationalMotor {
@@ -504,7 +513,7 @@ DEF NAO Robot {
           name "RShoulderRoll"
           maxVelocity 7.19407
           minPosition -1.32645
-          maxPosition 0.314159
+          maxPosition 2.0849999838849578
           maxTorque 5
         }
         PositionSensor {
@@ -513,6 +522,7 @@ DEF NAO Robot {
       ]
       endPoint Solid {
         translation 0 -0.098 0.1
+        rotation -0.17273121890155385 0.9797964162665553 -0.10081125278458924 2.102681239660752
         children [
           Transform {
             translation 0.005 0 0
@@ -564,6 +574,7 @@ DEF NAO Robot {
           }
           DEF RElbowYaw HingeJoint {
             jointParameters HingeJointParameters {
+              position 1.3959999584296665
               anchor 0.105 -0.015 0
             }
             device [
@@ -580,10 +591,11 @@ DEF NAO Robot {
             ]
             endPoint Solid {
               translation 0.105 -0.015 0
-              rotation 1 0 0 0
+              rotation 0.9999999999999999 0 0 1.3959999584296665
               children [
                 DEF RElbowRoll HingeJoint {
                   jointParameters HingeJointParameters {
+                    position 1.395999867055513
                     axis 0 0 1
                   }
                   device [
@@ -598,10 +610,11 @@ DEF NAO Robot {
                     }
                   ]
                   endPoint Solid {
-                    rotation 0 0 1 0
+                    rotation 0 0 0.9999999999999999 1.395999867055513
                     children [
                       DEF RWristYaw HingeJoint {
                         jointParameters HingeJointParameters {
+                          position -4.990085818030598e-08
                           anchor 0.05595 0 0
                         }
                         device [
@@ -618,10 +631,11 @@ DEF NAO Robot {
                         ]
                         endPoint Solid {
                           translation 0.05595 0 0
-                          rotation 1 0 0 0
+                          rotation -1 0 0 5.16191365590357e-08
                           children [
                             DEF RPhalanx1 HingeJoint {
                               jointParameters HingeJointParameters {
+                                position 1.1233362962789715e-10
                                 axis 0 -1 0
                                 anchor 0.069 -0.013 -0.005
                               }
@@ -636,7 +650,7 @@ DEF NAO Robot {
                               ]
                               endPoint Solid {
                                 translation 0.069 -0.013 -0.005
-                                rotation 0 1 0 0.9600000000000002
+                                rotation 0 1 0 0.9599999996629989
                                 children [
                                   DEF HAND_SLOT Transform {
                                     rotation 0 -1 0 0.96
@@ -660,6 +674,7 @@ DEF NAO Robot {
                                   }
                                   DEF RPhalanx2 HingeJoint {
                                     jointParameters HingeJointParameters {
+                                      position 5.664642971823726e-11
                                       axis 0 -1 0
                                       anchor 0.014 0 0
                                     }
@@ -674,11 +689,12 @@ DEF NAO Robot {
                                     ]
                                     endPoint Solid {
                                       translation 0.014 0 0
-                                      rotation 0 1 0 0.9600000000000002
+                                      rotation 0 1 0 0.9599999998300606
                                       children [
                                         USE PHALANX_TRANS
                                         DEF RPhalanx3 HingeJoint {
                                           jointParameters HingeJointParameters {
+                                            position 1.3929129979559148e-11
                                             axis 0 -1 0
                                             anchor 0.014 0 0
                                           }
@@ -693,7 +709,7 @@ DEF NAO Robot {
                                           ]
                                           endPoint Solid {
                                             translation 0.014 0 0
-                                            rotation 0 1 0 0.9600000000000002
+                                            rotation 0 1 0 0.9599999999582127
                                             children [
                                               USE PHALANX_TRANS
                                             ]
@@ -721,12 +737,14 @@ DEF NAO Robot {
                             }
                             DEF RPhalanx4 HingeJoint {
                               jointParameters HingeJointParameters {
+                                position -1.122658779363908e-10
                                 axis 0 -1 0
                                 anchor 0.069 0.013 -0.005
                               }
                               device [
                                 RotationalMotor {
                                   name "RPhalanx4"
+                                  minPosition -1.122658779363908e-10
                                   maxPosition 1
                                 }
                                 PositionSensor {
@@ -735,11 +753,12 @@ DEF NAO Robot {
                               ]
                               endPoint Solid {
                                 translation 0.069 0.013 -0.005
-                                rotation 0 1 0 0.9600000000000002
+                                rotation 0 1 0 0.9600000003367981
                                 children [
                                   USE PHALANX_TRANS
                                   DEF RPhalanx5 HingeJoint {
                                     jointParameters HingeJointParameters {
+                                      position 5.6471177804077485e-11
                                       axis 0 -1 0
                                       anchor 0.014 0 0
                                     }
@@ -754,11 +773,12 @@ DEF NAO Robot {
                                     ]
                                     endPoint Solid {
                                       translation 0.014 0 0
-                                      rotation 0 1 0 0.9600000000000002
+                                      rotation 0 1 0 0.9599999998305871
                                       children [
                                         USE PHALANX_TRANS
                                         DEF RPhalanx6 HingeJoint {
                                           jointParameters HingeJointParameters {
+                                            position 1.3999774436838178e-11
                                             axis 0 -1 0
                                             anchor 0.014 0 0
                                           }
@@ -773,7 +793,7 @@ DEF NAO Robot {
                                           ]
                                           endPoint Solid {
                                             translation 0.014 0 0
-                                            rotation 0 1 0 0.9600000000000002
+                                            rotation 0 0.9999999999999999 0 0.9599999999580007
                                             children [
                                               USE PHALANX_TRANS
                                             ]
@@ -799,12 +819,14 @@ DEF NAO Robot {
                             }
                             DEF RPhalanx7 HingeJoint {
                               jointParameters HingeJointParameters {
+                                position -5.5448099823333493e-11
                                 axis 0 1 0
                                 anchor 0.049 0 -0.026
                               }
                               device [
                                 RotationalMotor {
                                   name "RPhalanx7"
+                                  minPosition -5.5448099823333493e-11
                                   maxPosition 1
                                 }
                                 PositionSensor {
@@ -817,6 +839,7 @@ DEF NAO Robot {
                                   USE PHALANX_TRANS
                                   DEF RPhalanx8 HingeJoint {
                                     jointParameters HingeJointParameters {
+                                      position 1.4310553635810452e-11
                                       axis 0 1 0
                                       anchor 0.014 0 0
                                     }
@@ -831,7 +854,7 @@ DEF NAO Robot {
                                     ]
                                     endPoint Solid {
                                       translation 0.014 0 0
-                                      rotation 0 -1 0 0.9600000000000002
+                                      rotation 0 -1 0 0.9599999999570688
                                       children [
                                         USE PHALANX_TRANS
                                       ]
@@ -967,6 +990,8 @@ DEF NAO Robot {
                         2.33243e-06 -6.0117e-07 2.694e-08
                       ]
                     }
+                    linearVelocity -1.3818705292798655e-05 5.44754426938988e-07 -6.193652429197074e-06
+                    angularVelocity -5.1828933723150235e-06 -9.247075545753849e-05 4.191326097231335e-06
                   }
                 }
               ]
@@ -985,6 +1010,8 @@ DEF NAO Robot {
                   4.21e-09 4.319e-08 -1.84e-09
                 ]
               }
+              linearVelocity -1.3171557070744666e-05 4.799663496954371e-07 -6.82294449194193e-06
+              angularVelocity -5.182886997677807e-06 -9.247074785112462e-05 4.191242869901478e-06
             }
           }
         ]
@@ -1011,14 +1038,18 @@ DEF NAO Robot {
             -0.000126182 1.89718e-05 2.00601e-05
           ]
         }
+        linearVelocity -9.62527504232714e-06 3.9137389484369027e-07 -4.392401496993555e-06
+        angularVelocity -5.18288485782474e-06 -9.24707341423197e-05 4.191169366760553e-06
       }
     }
     DEF LShoulderPitch Hinge2Joint {
       jointParameters HingeJointParameters {
+        position 2.0849999838944484
         axis 0 1 0
         anchor 0 0.098 0.1
       }
       jointParameters2 JointParameters {
+        position 0.34899987826428064
       }
       device [
         RotationalMotor {
@@ -1037,7 +1068,7 @@ DEF NAO Robot {
           name "LShoulderRoll"
           maxVelocity 7.19407
           minPosition -0.314159
-          maxPosition 1.32645
+          maxPosition 2.0849999838944484
           maxTorque 5
         }
         PositionSensor {
@@ -1046,6 +1077,7 @@ DEF NAO Robot {
       ]
       endPoint Solid {
         translation 0 0.098 0.1
+        rotation 0.17273121947254846 0.9797964161317181 0.10081125311674037 2.102681239788753
         children [
           Transform {
             translation 0.005 0 0
@@ -1094,6 +1126,7 @@ DEF NAO Robot {
           }
           DEF LElbowYaw HingeJoint {
             jointParameters HingeJointParameters {
+              position -1.395999958979778
               anchor 0.105 0.015 0
             }
             device [
@@ -1110,10 +1143,11 @@ DEF NAO Robot {
             ]
             endPoint Solid {
               translation 0.105 0.015 0
-              rotation 1 0 0 0
+              rotation -1 0 0 1.3959999589797782
               children [
                 DEF LElbowRoll HingeJoint {
                   jointParameters HingeJointParameters {
+                    position -1.3959998668301665
                     axis 0 0 1
                   }
                   device [
@@ -1128,10 +1162,11 @@ DEF NAO Robot {
                     }
                   ]
                   endPoint Solid {
-                    rotation 0 0 1 0
+                    rotation 0 0 -1 1.3959998668301663
                     children [
                       DEF LWristYaw HingeJoint {
                         jointParameters HingeJointParameters {
+                          position 4.982774246626979e-08
                           anchor 0.05595 0 0
                         }
                         device [
@@ -1148,16 +1183,18 @@ DEF NAO Robot {
                         ]
                         endPoint Solid {
                           translation 0.05595 0 0
-                          rotation 1 0 0 0
+                          rotation 1 0 0 5.16191365590357e-08
                           children [
                             DEF LPhalanx1 HingeJoint {
                               jointParameters HingeJointParameters {
+                                position -1.1246297298767488e-10
                                 axis 0 -1 0
                                 anchor 0.069 -0.013 -0.005
                               }
                               device [
                                 RotationalMotor {
                                   name "LPhalanx1"
+                                  minPosition -1.1246297298767488e-10
                                   maxPosition 1
                                 }
                                 PositionSensor {
@@ -1166,7 +1203,7 @@ DEF NAO Robot {
                               ]
                               endPoint Solid {
                                 translation 0.069 -0.013 -0.005
-                                rotation 0 1 0 0.9600000000000002
+                                rotation 0 0.9999999999999999 0 0.9600000003373895
                                 children [
                                   DEF HAND_SLOT Transform {
                                     rotation 0 -1 0 0.96
@@ -1190,6 +1227,7 @@ DEF NAO Robot {
                                   }
                                   DEF LPhalanx2 HingeJoint {
                                     jointParameters HingeJointParameters {
+                                      position 5.7622572941593885e-11
                                       axis 0 -1 0
                                       anchor 0.014 0 0
                                     }
@@ -1204,17 +1242,19 @@ DEF NAO Robot {
                                     ]
                                     endPoint Solid {
                                       translation 0.014 0 0
-                                      rotation 0 1 0 0.9600000000000002
+                                      rotation 0 1 0 0.9599999998271322
                                       children [
                                         USE PHALANX_TRANS
                                         DEF LPhalanx3 HingeJoint {
                                           jointParameters HingeJointParameters {
+                                            position -1.3894185635634804e-11
                                             axis 0 -1 0
                                             anchor 0.014 0 0
                                           }
                                           device [
                                             RotationalMotor {
                                               name "LPhalanx3"
+                                              minPosition -1.3894185635634804e-11
                                               maxPosition 1
                                             }
                                             PositionSensor {
@@ -1223,7 +1263,7 @@ DEF NAO Robot {
                                           ]
                                           endPoint Solid {
                                             translation 0.014 0 0
-                                            rotation 0 1 0 0.9600000000000002
+                                            rotation 0 0.9999999999999999 0 0.9600000000416823
                                             children [
                                               USE PHALANX_TRANS
                                             ]
@@ -1251,12 +1291,14 @@ DEF NAO Robot {
                             }
                             DEF LPhalanx4 HingeJoint {
                               jointParameters HingeJointParameters {
+                                position -1.1245179068842724e-10
                                 axis 0 -1 0
                                 anchor 0.069 0.013 -0.005
                               }
                               device [
                                 RotationalMotor {
                                   name "LPhalanx4"
+                                  minPosition -1.1245179068842724e-10
                                   maxPosition 1
                                 }
                                 PositionSensor {
@@ -1265,11 +1307,12 @@ DEF NAO Robot {
                               ]
                               endPoint Solid {
                                 translation 0.069 0.013 -0.005
-                                rotation 0 1 0 0.9600000000000002
+                                rotation 0 1 0 0.9600000003373549
                                 children [
                                   USE PHALANX_TRANS
                                   DEF LPhalanx5 HingeJoint {
                                     jointParameters HingeJointParameters {
+                                      position 5.7628231887448286e-11
                                       axis 0 -1 0
                                       anchor 0.014 0 0
                                     }
@@ -1284,17 +1327,19 @@ DEF NAO Robot {
                                     ]
                                     endPoint Solid {
                                       translation 0.014 0 0
-                                      rotation 0 1 0 0.9600000000000002
+                                      rotation 0 0.9999999999999999 0 0.9599999998271149
                                       children [
                                         USE PHALANX_TRANS
                                         DEF LPhalanx6 HingeJoint {
                                           jointParameters HingeJointParameters {
+                                            position -1.389217059375783e-11
                                             axis 0 -1 0
                                             anchor 0.014 0 0
                                           }
                                           device [
                                             RotationalMotor {
                                               name "LPhalanx6"
+                                              minPosition -1.389217059375783e-11
                                               maxPosition 1
                                             }
                                             PositionSensor {
@@ -1303,7 +1348,7 @@ DEF NAO Robot {
                                           ]
                                           endPoint Solid {
                                             translation 0.014 0 0
-                                            rotation 0 1 0 0.9600000000000002
+                                            rotation 0 1 0 0.9600000000416765
                                             children [
                                               USE PHALANX_TRANS
                                             ]
@@ -1329,6 +1374,7 @@ DEF NAO Robot {
                             }
                             DEF LPhalanx7 HingeJoint {
                               jointParameters HingeJointParameters {
+                                position 5.5868859744908625e-11
                                 axis 0 1 0
                                 anchor 0.049 0 -0.026
                               }
@@ -1347,6 +1393,7 @@ DEF NAO Robot {
                                   USE PHALANX_TRANS
                                   DEF LPhalanx8 HingeJoint {
                                     jointParameters HingeJointParameters {
+                                      position 1.3866345303010647e-11
                                       axis 0 1 0
                                       anchor 0.014 0 0
                                     }
@@ -1361,7 +1408,7 @@ DEF NAO Robot {
                                     ]
                                     endPoint Solid {
                                       translation 0.014 0 0
-                                      rotation 0 -1 0 0.9600000000000002
+                                      rotation 0 -0.9999999999999999 0 0.9599999999584008
                                       children [
                                         USE PHALANX_TRANS
                                       ]
@@ -1540,6 +1587,7 @@ DEF NAO Robot {
     }
     DEF RHipYawPitch HingeJoint {
       jointParameters HingeJointParameters {
+        position 5.339737448496434e-06
         axis 0 0.707107 0.707107
         anchor 0 -0.05 -0.085
       }
@@ -1557,7 +1605,7 @@ DEF NAO Robot {
       ]
       endPoint Solid {
         translation 0 -0.05 -0.085
-        rotation 0 0.7071067811865476 0.7071067811865476 0
+        rotation 0 0.7071067811865475 0.7071067811865475 5.3397745090640355e-06
         children [
           Shape {
             appearance USE MAIN_SKIN_APP
@@ -1585,6 +1633,7 @@ DEF NAO Robot {
           }
           DEF RHipRoll HingeJoint {
             jointParameters HingeJointParameters {
+              position 0.0020053782829982936
             }
             device [
               RotationalMotor {
@@ -1599,7 +1648,7 @@ DEF NAO Robot {
               }
             ]
             endPoint Solid {
-              rotation 1 0 0 0
+              rotation 1 0 0 0.0020053782829929905
               children [
                 DEF HIP_ROLL_CYL_TRANS Transform {
                   translation -0.019 0 0
@@ -1634,6 +1683,7 @@ DEF NAO Robot {
                 }
                 DEF RHipPitch HingeJoint {
                   jointParameters HingeJointParameters {
+                    position -0.660999245713465
                     axis 0 1 0
                   }
                   device [
@@ -1649,6 +1699,7 @@ DEF NAO Robot {
                     }
                   ]
                   endPoint Solid {
+                    rotation 0 -1 0 0.6609992457134649
                     children [
                       Shape {
                         appearance USE MAIN_SKIN_APP
@@ -1676,6 +1727,7 @@ DEF NAO Robot {
                       }
                       DEF RKneePitch HingeJoint {
                         jointParameters HingeJointParameters {
+                          position 1.2260017423558447
                           axis 0 1 0
                           anchor 0 0 -0.1
                         }
@@ -1693,6 +1745,7 @@ DEF NAO Robot {
                         ]
                         endPoint Solid {
                           translation 0 0 -0.1
+                          rotation 0 1 0 1.2260017423558447
                           children [
                             Shape {
                               appearance USE MAIN_SKIN_APP
@@ -1734,6 +1787,7 @@ DEF NAO Robot {
                             }
                             DEF RAnklePitch HingeJoint {
                               jointParameters HingeJointParameters {
+                                position -0.564999814698945
                                 axis 0 1 0
                                 anchor 0 0 -0.1029
                               }
@@ -1751,6 +1805,7 @@ DEF NAO Robot {
                               ]
                               endPoint Solid {
                                 translation 0 0 -0.1029
+                                rotation 0 -1 0 0.5649998146989453
                                 children [
                                   DEF ANKLE_SHAPE Shape {
                                     appearance USE STRUCTURE_APP
@@ -1768,6 +1823,7 @@ DEF NAO Robot {
                                   }
                                   DEF RAnkleRoll HingeJoint {
                                     jointParameters HingeJointParameters {
+                                      position -0.0019989695215079095
                                     }
                                     device [
                                       RotationalMotor {
@@ -1782,14 +1838,14 @@ DEF NAO Robot {
                                       }
                                     ]
                                     endPoint Solid {
-                                      rotation 1 0 0 0
+                                      rotation -1 0 0 0.0019989695215373035
                                       children [
                                         DEF RIGHT_FOOT_SLOT Transform {
                                           translation 0.0254 -0.00332 -0.03241
                                         }
                                         DEF RFsr TouchSensor {
-                                          translation 0.02 -0.007 -0.041
-                                          rotation 0 0 1 3.1416
+                                          translation 0.019997113157522506 -0.006974746651592617 -0.04097250413185742
+                                          rotation 2.933678453189425e-07 -1.260252068822077e-07 0.999999999999949 -3.1415851445478027
                                           name "RFsr"
                                           contactMaterial "NAO foot material"
                                           boundingObject DEF FOOT_Box Box {
@@ -2025,10 +2081,13 @@ DEF NAO Robot {
             5.00219e-06 1.27352e-05 -2.77008e-05
           ]
         }
+        linearVelocity -4.248888451121241e-07 4.5437955367102987e-07 5.466782846554966e-06
+        angularVelocity -5.385794871476498e-06 -4.719386014363889e-05 -4.108654071618383e-05
       }
     }
     DEF LHipYawPitch HingeJoint {
       jointParameters HingeJointParameters {
+        position -5.135780657612641e-06
         axis 0 0.707107 -0.707107
         anchor 0 0.05 -0.085
       }
@@ -2046,7 +2105,7 @@ DEF NAO Robot {
       ]
       endPoint Solid {
         translation 0 0.05 -0.085
-        rotation 0 0.7071067811865476 -0.7071067811865476 0
+        rotation 0 -0.7071067811865475 0.7071067811865475 5.13577983658267e-06
         children [
           Shape {
             appearance USE MAIN_SKIN_APP
@@ -2074,6 +2133,7 @@ DEF NAO Robot {
           }
           DEF LHipRoll HingeJoint {
             jointParameters HingeJointParameters {
+              position 0.001994986946935729
             }
             device [
               RotationalMotor {
@@ -2088,12 +2148,13 @@ DEF NAO Robot {
               }
             ]
             endPoint Solid {
-              rotation 1 0 0 0
+              rotation 1 0 0 0.00199498694703347
               children [
                 USE HIP_ROLL_CYL_TRANS
                 USE UPPER_THIGH_SHAPE
                 DEF LHipPitch HingeJoint {
                   jointParameters HingeJointParameters {
+                    position -0.6630005905152307
                     axis 0 1 0
                   }
                   device [
@@ -2109,6 +2170,7 @@ DEF NAO Robot {
                     }
                   ]
                   endPoint Solid {
+                    rotation 0 -1 0 0.663000590515231
                     children [
                       Shape {
                         appearance USE MAIN_SKIN_APP
@@ -2136,6 +2198,7 @@ DEF NAO Robot {
                       }
                       DEF LKneePitch HingeJoint {
                         jointParameters HingeJointParameters {
+                          position 1.232000596840379
                           axis 0 1 0
                           anchor 0 0 -0.1
                         }
@@ -2153,6 +2216,7 @@ DEF NAO Robot {
                         ]
                         endPoint Solid {
                           translation 0 0 -0.1
+                          rotation 0 1 0 1.2320005968403789
                           children [
                             Shape {
                               appearance USE MAIN_SKIN_APP
@@ -2190,6 +2254,7 @@ DEF NAO Robot {
                             }
                             DEF LAnklePitch HingeJoint {
                               jointParameters HingeJointParameters {
+                                position -0.5680002132726543
                                 axis 0 1 0
                                 anchor 0 0 -0.1029
                               }
@@ -2207,10 +2272,12 @@ DEF NAO Robot {
                               ]
                               endPoint Solid {
                                 translation 0 0 -0.1029
+                                rotation 0 -1 0 0.5680002132726543
                                 children [
                                   USE ANKLE_SHAPE
                                   DEF LAnkleRoll HingeJoint {
                                     jointParameters HingeJointParameters {
+                                      position -0.002000945002475163
                                     }
                                     device [
                                       RotationalMotor {
@@ -2225,14 +2292,14 @@ DEF NAO Robot {
                                       }
                                     ]
                                     endPoint Solid {
-                                      rotation 1 0 0 0
+                                      rotation -1 0 0 0.002000945002559998
                                       children [
                                         DEF LEFT_FOOT_SLOT Transform {
                                           translation 0.0254 0.00332 -0.03241
                                         }
                                         DEF LFsr TouchSensor {
-                                          translation 0.02 0.007 -0.041
-                                          rotation 0 0 1 3.1416
+                                          translation 0.020002997840795178 0.006974665552510494 -0.04097697775441954
+                                          rotation 1.7124305461430252e-07 -1.1894102369764571e-09 0.9999999999999853 -3.141585137468155
                                           name "LFsr"
                                           contactMaterial "NAO foot material"
                                           boundingObject USE FOOT_Box
@@ -2434,6 +2501,8 @@ DEF NAO Robot {
             -4.99449e-06 1.27482e-05 2.34547e-05
           ]
         }
+        linearVelocity 3.869506288548544e-07 -6.332714646486471e-07 -1.1681309914169028e-05
+        angularVelocity -4.89332185561262e-06 -5.438140460729201e-05 4.143560444153412e-05
       }
     }
     DEF ARMS_AXIS Transform {
@@ -2477,10 +2546,8 @@ DEF NAO Robot {
     ]
   }
   controller "Nao_Controller"
-}
-DEF Ball Ball {
-  translation 1.7475012217063626 0.03239206322777712 0.03818880504172611
-  rotation 0.060206886219363445 0.5026599202675199 0.8623851433138322 0.8019955236154308
+  linearVelocity -4.939290185363743e-07 -8.647285827034884e-08 -3.643923106232901e-06
+  angularVelocity -5.18282295406035e-06 -9.24708848596178e-05 4.1909197712353445e-06
 }
 Robot {
   children [

@@ -12,11 +12,11 @@ class Nao (Robot):
         if self.receiver.getQueueLength() > 0:
             message = self.receiver.getData().decode('utf-8')
             if message == "Sacrifice yourself in My Name!":
-                print("This wasn't real anyway...")
+                print("This wasn't real anyway... ( Nao Controller exited )")
                 sys.exit(0)
             return message
         else:
-            print("No signs from God... does her exist?")
+            print("No signs from God... does she exist?")
             return False
 
 
