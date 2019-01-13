@@ -1,6 +1,7 @@
 from controller import Robot, Accelerometer, Camera, DistanceSensor, \
                        GPS, Gyro, InertialUnit, Keyboard, LED, Motion, \
                        Motor, TouchSensor
+import sys
 
 # this is the main class
 class Nao (Robot):

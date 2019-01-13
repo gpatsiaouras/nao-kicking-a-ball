@@ -12,7 +12,7 @@ class God:
     popolation_folder = "../../data/popolation/"
     individual_prename = "ind_"
     individual_file_format = ".motion"
-    max_generation = 100
+    max_generation = 10000
     backup_every = 50 # generations
     backup_folder = "../../data/backup/"
 
@@ -132,12 +132,14 @@ class God:
             # stop time?
             if self.n_generation >= self.max_generation:
                 self.backup()
-                self.die()
+                return False
+                # self.die()
 
             # now I should select and repopulate
             selected = self.selection()
             self.delete_not_selected(selected)
             self.repopolate(selected)
+        return True
 
     # get the path to the next motion file to use
     def next_motion_filename(self):
@@ -184,7 +186,7 @@ class God:
 
 class Driver (Supervisor):
     timeStep = 128
-    MAX_TIME = 12 # Max seconds for simulate!
+    MAX_TIME = 15 # Max seconds for simulate!
     football_goal = Polygon([(4.57151, 0.8), (4.57151, -0.8), (5.04, -0.8), (5.04, 0.8)])
     football_goal_point = Point(4.806, 0)
     start_distance = 0 # between the ball and the center of the football goal
@@ -257,7 +259,8 @@ class Driver (Supervisor):
         self.only_run(i_best)
 
     def run(self):
-        self.god.wake_up()
+        if not self.god.wake_up():
+            self.die()
 
         # print("this simulation is the number: "+str(self.god.current_individual))
 
@@ -318,10 +321,6 @@ class Driver (Supervisor):
             self.god = pickle.load(filehandler)
 
         print(self.god.scores)
-    # def saveGod(self):
-    #     np.save(self.godFile, self.god)
-    # def loadGod(self):
-    #     self.godFile = np.load(self.godFile)
 
     # How much the ball moved from the previous time_step
     def check_ball_speed(self):
@@ -385,7 +384,6 @@ class Driver (Supervisor):
         else:
             fallen_score = 1
 
-        # todo the average should be calculated at the moment of goal!
         avg_speed = self.speed_sum / self.speed_count
 
 
