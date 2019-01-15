@@ -78,7 +78,7 @@ class God:
     def create_individual(self, start_filename, i):
         adamo = self.open_motion_file(start_filename)
 
-        probability_to_change = 0.05
+        probability_to_change = 0.04
         percentuage_to_change = range(5, 10 + 1)  # [from, to] 5% - 10% # need the +1
         min_change = 0.01  # 0.1, not 1% !
 
@@ -192,7 +192,7 @@ class God:
     # create a backup in data/backup
     def backup(self):
         timestr = time.strftime("%Y%m%d-%H%M%S")
-        backup_dst = self.backup_folder + timestr
+        backup_dst = self.backup_folder + timestr + "_generation_"+ self.n_generation + " best: " + str(self.scores.index(max(self.scores)))
         backup_dst_pop = backup_dst + "/popolation/"
 
         if not os.path.exists(self.backup_folder):
@@ -421,7 +421,7 @@ class Driver (Supervisor):
         avg_speed = self.speed_sum / self.speed_count
 
 
-        score = (10000*self.max_y_ball + 1) * goal_score * avg_speed * 10 * self.speed_max / fallen_score
+        score =  goal_score * avg_speed * 10 * self.speed_max / fallen_score # (10000*self.max_y_ball + 1) *
         return score
 
     def die(self):

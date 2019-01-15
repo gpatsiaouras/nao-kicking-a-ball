@@ -18,7 +18,7 @@ class Nao (Robot):
             # print("Yes, my Lord.")
             return message
         else:
-            if self._first:
+            if not self._first:
                 print("No signs from God... does she exist?")
                 self._first = False
             return False
