@@ -16,7 +16,7 @@ class God:
     max_generation = 10000
     backup_every = 50  # generations
     backup_folder = "../../data/backup/"
-    adamo_filepath = "../../motions/Shoot.motion"
+    adamo_filepath = "../../motions/Shoot_corrected.motion"
 
     n_popolation = 100
     n_to_select = 10
@@ -534,6 +534,15 @@ class motion_util:
 
     def save(self):
         self.close_motion_file(self.motion, self.filepath)
+    def saveCopy(self):
+        folder = os.path.dirname(self.filepath)
+        filename = os.path.basename(self.filepath)
+
+        name, ext = os.path.splitext(filename)
+        new_filepath = folder+"/"+name+"_copy"+ext
+
+        print(new_filepath)
+        self.close_motion_file(self.motion, new_filepath)
 
     # you give as input an array and a filepath where to save, and it will create back the motion file!
     def close_motion_file(self, content, filepath):
@@ -592,11 +601,31 @@ class motion_util:
     def get_seconds(self, time_str):
         m, s, ms = time_str.split(':')
         return float(m) * 60 + float(s) + float(ms) / 1000
+    def seconds2str(self, seconds):
+        ms = int(round((seconds % 1) * 1000))
+        s = math.floor(seconds) % 60
+        m = math.floor(seconds / 60)
+        return str(m).zfill(2)+":"+str(s).zfill(2)+":"+str(ms).zfill(3)
+
+    # adds milliseconds from the start and iterate to everyother row
+    # to add 40ms call it with seconds = 0.04
+    # to add from the first row, call it with i_line = 1
+    def add_initial_time_to_motion_file(self, seconds, i_line):
+        if i_line == 0: # the first one is the title!!
+            i_line = 1
+        for il in range(i_line, len(self.motion)):
+            s = self.get_seconds(self.motion[il][0])
+            s += seconds
+            self.motion[il][0] = self.seconds2str(s)
 
 
+#
 # util = motion_util()
 # util.open(r"../../motions/Shoot.motion")
-# util.respect_limits()
+# # util.respect_limits()
+# util.add_initial_time_to_motion_file(1,1)
+# util.saveCopy()
+
 
 controller = Driver()
 controller.initialization()
