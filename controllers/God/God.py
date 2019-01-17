@@ -568,10 +568,10 @@ class motion_util:
                 # then check for every row, if it is respecting this limit
                 old_value = None
                 old_time = None
-                remaining = 0
+                # remaining = 0
                 for ir in range(1, len(motion)):
-                    motion[ir][ic] += remaining
-                    remaining = 0
+                    # motion[ir][ic] += remaining
+                    # remaining = 0
 
                     # now let's check for the time limit!
                     if old_value is not None:
@@ -594,17 +594,17 @@ class motion_util:
                     # make them respect the min and max limits
                     if motion[ir][ic] < self.limits[part_name_index][1]:
                         motion[ir][ic] = self.limits[part_name_index][1]
-                        if remaining < 0:
-                            remaining = 0
+                        # if remaining < 0:
+                        #     remaining = 0
                     elif motion[ir][ic] > self.limits[part_name_index][3]:
                         motion[ir][ic] = self.limits[part_name_index][3]
-                        if remaining > 0:
-                            remaining = 0
+                        # if remaining > 0:
+                        #     remaining = 0
 
                     old_value = motion[ir][ic]
                     old_time = self.get_seconds(motion[ir][0])
-                if remaining > 0:
-                    print("seems is left some remaining...")
+                # if remaining > 0:
+                #     print("seems is left some remaining...")
 
         #Re add the titles
         print(motion[0])
@@ -706,34 +706,39 @@ class motion_util:
 
 
 
-#
-# util = motion_util()
-# util.open(r"../../motions/Shoot.motion")
-# # util.respect_limits()
-# util.add_initial_time_to_motion_file(0.1)
-# util.saveCopy()
 
 # util = motion_util()
 # util.open(r"../../motions/Shoot.motion")
 # util.plot_motion(6)
 
 
-# util = motion_util()
-# util.open(r"../../motions/Shoot_copy.motion")
-# util.check_limits(False)
-# util.respect_limits()
 #
-# util2 = motion_util()
-# util2.open(r"../../motions/Shoot_copy_corrected.motion")
-# util2.check_limits(False)
+util = motion_util()
+util.open(r"../../motions/Shoot.motion")
+# util.respect_limits()
+util.add_initial_time_to_motion_file(0.1)
+util.saveCopy()
 
+util = motion_util()
+util.open(r"../../motions/Shoot_copy.motion")
+util.check_limits(False)
+util.respect_limits()
 
+util2 = motion_util()
+util2.open(r"../../motions/Shoot_copy_corrected.motion")
+util2.check_limits(False)
 
 controller = Driver()
 controller.initialization()
-controller.god.adamo_filepath = r"../../motions/Shoot_copy_corrected.motion"
-controller.run()
-# controller.only_run(35)
+controller.run_motion_file(r"../../motions/Shoot_copy_corrected.motion")
+
+
+
+# controller = Driver()
+# controller.initialization()
+# # controller.god.adamo_filepath = r"../../motions/Shoot_copy_corrected.motion"
+# controller.run()
+# # controller.only_run(35)
 
 # controller.run_motion_file(r"../../motions/Shoot_copy_corrected.motion")
 # controller.run_original()
