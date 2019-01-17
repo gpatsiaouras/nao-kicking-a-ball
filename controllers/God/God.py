@@ -713,32 +713,32 @@ class motion_util:
 
 
 #
-util = motion_util()
-util.open(r"../../motions/Shoot.motion")
+# util = motion_util()
+# util.open(r"../../motions/Shoot.motion")
+# # util.respect_limits()
+# util.add_initial_time_to_motion_file(0.1)
+# util.saveCopy()
+#
+# util = motion_util()
+# util.open(r"../../motions/Shoot_copy.motion")
+# util.check_limits(False)
 # util.respect_limits()
-util.add_initial_time_to_motion_file(0.1)
-util.saveCopy()
+#
+# util2 = motion_util()
+# util2.open(r"../../motions/Shoot_copy_corrected.motion")
+# util2.check_limits(False)
+#
+# controller = Driver()
+# controller.initialization()
+# controller.run_motion_file(r"../../motions/Shoot_copy_corrected.motion")
 
-util = motion_util()
-util.open(r"../../motions/Shoot_copy.motion")
-util.check_limits(False)
-util.respect_limits()
 
-util2 = motion_util()
-util2.open(r"../../motions/Shoot_copy_corrected.motion")
-util2.check_limits(False)
 
 controller = Driver()
 controller.initialization()
-controller.run_motion_file(r"../../motions/Shoot_copy_corrected.motion")
-
-
-
-# controller = Driver()
-# controller.initialization()
-# # controller.god.adamo_filepath = r"../../motions/Shoot_copy_corrected.motion"
-# controller.run()
-# # controller.only_run(35)
+# controller.god.adamo_filepath = r"../../motions/Shoot_copy_corrected.motion"
+controller.run()
+# controller.only_run(35)
 
 # controller.run_motion_file(r"../../motions/Shoot_copy_corrected.motion")
 # controller.run_original()
