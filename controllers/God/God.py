@@ -7,10 +7,11 @@ import pickle
 import os, sys, random, time
 from shutil import copyfile
 from distutils.dir_util import copy_tree
-
+import matplotlib.pyplot as plt
+from copy import deepcopy
 
 class God:
-    popolation_folder = "../../data/popolation/"
+    population_folder = "../../data/population/"
     individual_prename = "ind_"
     individual_file_format = ".motion"
     max_generation = 10000
@@ -18,7 +19,7 @@ class God:
     backup_folder = "../../data/backup/"
     adamo_filepath = "../../motions/Shoot_corrected.motion"
 
-    n_popolation = 100
+    n_population = 100
     n_to_select = 10
     n_to_crossover = 40 # need to be an even number
 
@@ -31,7 +32,7 @@ class God:
         print(": I am the Alpha and the Omega ( Initialized the God.py )")
         self.godFile = godFile
         self.motion_util = motion_util()
-        self.popolate()
+        self.populate()
         self.reset_all_score()
         self.current_individual = 0
         self.n_generation = 1
@@ -42,7 +43,7 @@ class God:
         self.current_individual = 1
 
         scores = self.scores  # backup
-        self.scores = [0] * self.n_popolation  # reset to zero the score array
+        self.scores = [0] * self.n_population  # reset to zero the score array
 
         # Now I put the score back to the selected ones, so they will not be retested!
         for sel in selected:
@@ -55,8 +56,8 @@ class God:
         # the top n_to_save, return they indeces
         return np.argpartition(self.scores, -self.n_to_select)[-self.n_to_select:]
 
-    # kill the individual not selected, and repopolate
-    def repopolate(self, selected):
+    # kill the individual not selected, and repopulate
+    def repopulate(self, selected):
         print(": Have a lot of children and grandchildren. ( repopolating ) ")
 
         individual_crossed = []
@@ -67,24 +68,24 @@ class God:
 
             individual_crossed.extend( self.crossover(self.create_individual_filepath(first), self.create_individual_filepath(second)) )
 
-        for i in range(self.n_popolation):
+        for i in range(self.n_population):
             # I just skipt the number of the ones selected, so I don't have to rename or think to much about it
             if i in selected:
                 continue
 
             if len(individual_crossed) > 0:
-                self.close_motion_file(individual_crossed.pop(), self.popolation_folder + self.individual_prename + str(i) + self.individual_file_format)
+                self.close_motion_file(individual_crossed.pop(), self.population_folder + self.individual_prename + str(i) + self.individual_file_format)
             else: # random mutation
                 self.create_mutated_individual(self.create_individual_filepath(random.choice(selected)), i)
 
         self.next_gen(selected)
 
 
-    # First initialization of the popolation
-    def popolate(self):
+    # First initialization of the population
+    def populate(self):
         print(
-            ": Let the waters bring forth abundantly the moving creature that hath life ( initialization of the popolation )")
-        for i in range(self.n_popolation):
+            ": Let the waters bring forth abundantly the moving creature that hath life ( initialization of the population )")
+        for i in range(self.n_population):
             self.create_mutated_individual(self.adamo_filepath, i)
 
     def create_mutated_individual(self, start_filename, i):
@@ -135,7 +136,7 @@ class God:
                         adamo[i_row - 1][col] = str(float(adamo[i_row - 1][col]) + change / 2)
                         adamo[i_row + 1][col] = str(float(adamo[i_row + 1][col]) + change / 2)
 
-        self.close_motion_file(adamo, self.popolation_folder + self.individual_prename + str(i) + self.individual_file_format)
+        self.close_motion_file(adamo, self.population_folder + self.individual_prename + str(i) + self.individual_file_format)
 
     # CROSSOVER!!
     def crossover(self, ind1, ind2):
@@ -170,12 +171,12 @@ class God:
         print(": The end is now upon you. ( selection of the best ones )")
 
         # selected contains the indeces of the selected ones
-        for i in range(self.n_popolation):
+        for i in range(self.n_population):
             if i not in selected:
                 self.delete_individual(i)
 
     def delete_individual(self, i):
-        filename = self.popolation_folder + self.individual_prename + str(i) + self.individual_file_format
+        filename = self.population_folder + self.individual_prename + str(i) + self.individual_file_format
         if os.path.exists(filename):
             os.remove(filename)
         else:
@@ -189,12 +190,12 @@ class God:
         self.current_individual += 1
 
         # I don't want to retest the ones already tested:
-        while self.current_individual <= self.n_popolation and self.scores[self.current_individual - 1] != 0:
+        while self.current_individual <= self.n_population and self.scores[self.current_individual - 1] != 0:
             self.current_individual += 1
 
-        # Have we finished to evaluate the current popolation?
-        if self.current_individual > self.n_popolation:
-            print(": Noah! Prepare the ark, I have to pee... ( I evaluated all the popolation ) ")
+        # Have we finished to evaluate the current population?
+        if self.current_individual > self.n_population:
+            print(": Noah! Prepare the ark, I have to pee... ( I evaluated all the population ) ")
 
             # backup time?
             if self.n_generation % self.backup_every == 0:
@@ -208,7 +209,7 @@ class God:
             # now I should select and repopulate
             selected = self.selection()
             self.delete_not_selected(selected)
-            self.repopolate(selected)
+            self.repopulate(selected)
         return True
 
     # get the path to the next motion file to use
@@ -216,7 +217,7 @@ class God:
         return self.create_individual_filepath(self.current_individual - 1)
 
     def create_individual_filepath(self, i):
-        return self.popolation_folder + self.individual_prename + str(i) + self.individual_file_format
+        return self.population_folder + self.individual_prename + str(i) + self.individual_file_format
 
     # it opens a motion file, and format in an array rows x cols, remember that the first row is the title
     def open_motion_file(self, filepath):
@@ -236,7 +237,7 @@ class God:
     def backup(self):
         timestr = time.strftime("%Y%m%d-%H%M%S")
         backup_dst = self.backup_folder + timestr + "_generation_"+ str(self.n_generation) + " best_" + str(self.scores.index(max(self.scores)))
-        backup_dst_pop = backup_dst + "/popolation/"
+        backup_dst_pop = backup_dst + "/population/"
 
         if not os.path.exists(self.backup_folder):
             os.mkdir(self.backup_folder)  # create the folder "backup" if doesn't exist....
@@ -245,11 +246,11 @@ class God:
             os.mkdir(backup_dst_pop)
         # copy the god file
         copyfile(self.godFile, backup_dst + "/god.npy")
-        # copy the popolation folder
-        copy_tree(self.popolation_folder, backup_dst_pop)
+        # copy the population folder
+        copy_tree(self.population_folder, backup_dst_pop)
 
     def reset_all_score(self):
-        self.scores = [0] * self.n_popolation
+        self.scores = [0] * self.n_population
 
 class Driver (Supervisor):
     timeStep = 128
@@ -303,15 +304,9 @@ class Driver (Supervisor):
 
     def run_original(self):
         self.only_run(-1)
-
-    def only_run(self, num):
-        if num == -1:
-            motion_file_evaluated = self.god.adamo_filepath
-        else:
-            motion_file_evaluated = (self.god.popolation_folder + self.god.individual_prename + str(
-                num) + self.god.individual_file_format)
-        print(motion_file_evaluated)
-        self.emitter.send(motion_file_evaluated.encode('utf-8'))
+    def run_motion_file(self, motion_file):
+        print(motion_file)
+        self.emitter.send(motion_file.encode('utf-8'))
 
         # Main loop.
         while self.step(self.timeStep) != -1:
@@ -328,6 +323,14 @@ class Driver (Supervisor):
 
                 self.step(self.timeStep) # this is for flush the console output
                 break
+
+    def only_run(self, num):
+        if num == -1:
+            motion_file_evaluated = self.god.adamo_filepath
+        else:
+            motion_file_evaluated = (self.god.population_folder + self.god.individual_prename + str(
+                num) + self.god.individual_file_format)
+        self.run_motion_file(motion_file_evaluated)
 
     def run_the_best(self):
         max_score = max(self.god.scores)
@@ -398,7 +401,7 @@ class Driver (Supervisor):
         with open(self.godFile, 'rb') as filehandler:
             self.god = pickle.load(filehandler)
 
-        print(self.god.scores)
+        # print(self.god.scores)
 
     # How much the ball moved from the previous time_step
     def check_ball_speed(self):
@@ -478,6 +481,26 @@ class motion_util:
     def __init__(self):
         print("initialized")
         self.load_limits()
+
+    def load_limits(self):
+        # first line is the columns' titles...
+        part_name = []
+        with open(self.limits_filepath) as f:
+            content = f.readlines()
+
+        # for line in content:
+        part_name = [x.strip().split(":")[0] for x in content]
+        content = [x.strip().split(":")[1] for x in content]
+        content = [x.strip().split(",") for x in content]
+        for line in content:
+            line[1] = float(line[1])
+            line[3] = float(line[3])
+            line[5] = float(line[5])
+            line[7] = float(line[7])
+
+        self.part_names_limits = part_name
+        self.limits = content
+
     def open(self, filepath):
         self.motion = self.open_motion_file(filepath)
         self.filepath = filepath
@@ -509,40 +532,21 @@ class motion_util:
         if delta_t  != -1: # if it is, then it is the first row, and it is ignored the speed constraint!
             speed = math.fabs(previous_value - new_value) / delta_t
             if speed > self.limits[part_name_index][5]:
-                right_value = old_value + time_difference * self.limits[part_name_index][5] *0.99 # 0.99 just for approximation errors : S
+                right_value = old_value + time_difference * self.limits[part_name_index][5] *0.999 # 0.99 just for approximation errors : S
 
         return right_value
-
-    def load_limits(self):
-        # first line is the columns' titles...
-        part_name = []
-        with open(self.limits_filepath) as f:
-            content = f.readlines()
-
-        # for line in content:
-        part_name = [x.strip().split(":")[0] for x in content]
-        content = [x.strip().split(":")[1] for x in content]
-        content = [x.strip().split(",") for x in content]
-        for line in content:
-            line[1] = float(line[1])
-            line[3] = float(line[3])
-            line[5] = float(line[5])
-            line[7] = float(line[7])
-
-        self.part_names_limits = part_name
-        self.limits = content
 
     def save(self):
         self.close_motion_file(self.motion, self.filepath)
     def saveCopy(self):
-        folder = os.path.dirname(self.filepath)
-        filename = os.path.basename(self.filepath)
+        self.close_motion_file(self.motion, self.getCopyName(self.filepath, "_copy"))
+    def getCopyName(self, filepath, add_name):
+        folder = os.path.dirname(filepath)
+        filename = os.path.basename(filepath)
 
         name, ext = os.path.splitext(filename)
-        new_filepath = folder+"/"+name+"_copy"+ext
-
-        print(new_filepath)
-        self.close_motion_file(self.motion, new_filepath)
+        new_filepath = folder+"/"+name+add_name+ext
+        return new_filepath
 
     # you give as input an array and a filepath where to save, and it will create back the motion file!
     def close_motion_file(self, content, filepath):
@@ -556,7 +560,7 @@ class motion_util:
         print("saved here "+filepath)
 
     def respect_limits(self):
-        motion = self.motion
+        motion = deepcopy(self.motion)
         n_cols = len(motion[0])
         for ic in range(n_cols):
             if motion[0][ic] in self.part_names_limits: # then this part as some limits
@@ -568,11 +572,68 @@ class motion_util:
                 for ir in range(1, len(motion)):
                     motion[ir][ic] += remaining
                     remaining = 0
+
+                    # now let's check for the time limit!
+                    if old_value is not None:
+                        time_difference = self.get_seconds(motion[ir][0]) - old_time
+                        speed = math.fabs(old_value - motion[ir][ic]) / time_difference
+                        if speed > self.limits[part_name_index][5]:
+                            # print("too fast!")
+                            # let's reduce it
+                            sign = 1
+                            if motion[ir][ic] - old_value < 0:
+                                sign = -1
+                            new_value = old_value + sign * time_difference * self.limits[part_name_index][5] *0.999 # 0.99 just for approximation errors : S
+                            # print("----------")
+                            # print(old_value)
+                            # print(motion[ir][ic])
+                            # print(new_value)
+                            remaining = motion[ir][ic] - new_value
+                            motion[ir][ic] = new_value
+
                     # make them respect the min and max limits
                     if motion[ir][ic] < self.limits[part_name_index][1]:
                         motion[ir][ic] = self.limits[part_name_index][1]
+                        if remaining < 0:
+                            remaining = 0
                     elif motion[ir][ic] > self.limits[part_name_index][3]:
                         motion[ir][ic] = self.limits[part_name_index][3]
+                        if remaining > 0:
+                            remaining = 0
+
+                    old_value = motion[ir][ic]
+                    old_time = self.get_seconds(motion[ir][0])
+                if remaining > 0:
+                    print("seems is left some remaining...")
+
+        #Re add the titles
+        print(motion[0])
+
+        self.motion = motion
+        self.close_motion_file(motion, self.getCopyName(self.filepath, '_corrected'))
+    def check_limits(self, verbose):
+        motion = deepcopy(self.motion)
+        titles = motion.pop(0)
+        n_cols = len(motion[0])
+        min_error_count = 0
+        max_error_count = 0
+        speed_error_count = 0
+        for ic in range(n_cols):
+            if titles[ic] in self.part_names_limits: # then this part as some limits
+                part_name_index = self.part_names_limits.index(titles[ic])
+                # then check for every row, if it is respecting this limit
+                old_value = None
+                old_time = None
+                for ir in range(len(motion)):
+                    # make them respect the min and max limits
+                    if motion[ir][ic] < self.limits[part_name_index][1]:
+                        if verbose:
+                            print(" pose"+str(ir)+" and column "+str(ic)+" broke the min limit")
+                        min_error_count += 1
+                    elif motion[ir][ic] > self.limits[part_name_index][3]:
+                        if verbose:
+                            print(" pose"+str(ir)+" and column "+str(ic)+" broke the max limit")
+                        max_error_count += 1
 
                     # now let's check for the time limit!
                     if old_value == None:
@@ -580,22 +641,25 @@ class motion_util:
                         old_time = self.get_seconds(motion[ir][0])
                         continue
 
-                    time_difference = old_time - self.get_seconds(motion[ir][0])
-                    speed = math.fabs(old_value - motion[ir][ic]) / time_difference
+                    time_difference = self.get_seconds(motion[ir][0]) - old_time
+                    speed = math.fabs(motion[ir][ic] - old_value) / time_difference
                     if speed > self.limits[part_name_index][5]:
-                        # print("too fast!")
-                        # let's reduce it
-                        new_value = old_value + time_difference * self.limits[part_name_index][5] *0.99 # 0.99 just for approximation errors : S
-                        remaining = motion[ir][ic] - new_value
-                        motion[ir][ic] = new_value
+                        if verbose:
+                            print(" pose"+str(ir)+" and column "+str(ic)+" broken the SPEED limit" + "speed: " + str(speed) + " (limit: "+str(self.limits[part_name_index][5]) + ")" )
+                        speed_error_count += 1
 
 
                     old_value = motion[ir][ic]
                     old_time = self.get_seconds(motion[ir][0])
-                if remaining > 0:
-                    print("seems is left some remaining...")
-        self.motion = motion
-        self.close_motion_file(motion, self.filepath+"_")
+
+        if max_error_count + min_error_count + speed_error_count == 0:
+            print("The motion file looks ok! : )")
+            return True
+
+        print("The motion file present "+str(min_error_count)+" errors of MIN Limit")
+        print("The motion file present "+str(max_error_count)+" errors of MAX Limit")
+        print("The motion file got "+str(speed_error_count)+" tickets for exceed the Speed Limits")
+        return False
 
 
     def get_seconds(self, time_str):
@@ -610,28 +674,68 @@ class motion_util:
     # adds milliseconds from the start and iterate to everyother row
     # to add 40ms call it with seconds = 0.04
     # to add from the first row, call it with i_line = 1
-    def add_initial_time_to_motion_file(self, seconds, i_line):
-        if i_line == 0: # the first one is the title!!
-            i_line = 1
+    def add_initial_time_to_motion_file(self, seconds, ):
+        # if i_line == 0: # the first one is the title!!
+        i_line = 1
         for il in range(i_line, len(self.motion)):
             s = self.get_seconds(self.motion[il][0])
             s += seconds
             self.motion[il][0] = self.seconds2str(s)
+
+    # can show much more, but let's show just one per time: column_to_show
+    def plot_motion(self, column_to_show):
+        motion = deepcopy(self.motion)
+        titles = motion.pop(0)
+        # col_to_skip = [0,1] # 0 = time, 1 = pose#
+        data = [] # in row
+
+        for col in range(len(motion[0])):
+            # if col in col_to_skip:
+            #     continue
+
+            array = [motion[row][col] for row in range(len(motion))]
+            data.append(array)
+
+        # lest's extract the seconds
+        timesteps = [row[1].split("ose")[1] for row in motion]
+
+        plt.plot(timesteps, data[column_to_show])
+        plt.ylabel('rads')
+        plt.xlabel('time')
+        plt.show()
+
 
 
 #
 # util = motion_util()
 # util.open(r"../../motions/Shoot.motion")
 # # util.respect_limits()
-# util.add_initial_time_to_motion_file(1,1)
+# util.add_initial_time_to_motion_file(0.1)
 # util.saveCopy()
+
+# util = motion_util()
+# util.open(r"../../motions/Shoot.motion")
+# util.plot_motion(6)
+
+
+# util = motion_util()
+# util.open(r"../../motions/Shoot_copy.motion")
+# util.check_limits(False)
+# util.respect_limits()
+#
+# util2 = motion_util()
+# util2.open(r"../../motions/Shoot_copy_corrected.motion")
+# util2.check_limits(False)
+
 
 
 controller = Driver()
 controller.initialization()
+controller.god.adamo_filepath = r"../../motions/Shoot_copy_corrected.motion"
 controller.run()
 # controller.only_run(35)
 
+# controller.run_motion_file(r"../../motions/Shoot_copy_corrected.motion")
 # controller.run_original()
 # controller.run_the_best()
 
