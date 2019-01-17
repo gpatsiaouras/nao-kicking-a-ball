@@ -19,7 +19,8 @@ class God:
     adamo_filepath = "../../motions/Shoot.motion"
 
     n_popolation = 100
-    n_to_save = 10
+    n_to_select = 10
+    n_to_crossover = 40 # need to be an even number
 
     # motion file info/settings
     # 11 = LAnkleRoll
@@ -52,18 +53,29 @@ class God:
     def selection(self):
         print("The top one is the #" + str(self.scores.index(max(self.scores))) + " scored: " + str(max(self.scores)))
         # the top n_to_save, return they indeces
-        return np.argpartition(self.scores, -self.n_to_save)[-self.n_to_save:]
+        return np.argpartition(self.scores, -self.n_to_select)[-self.n_to_select:]
 
     # kill the individual not selected, and repopolate
     def repopolate(self, selected):
         print(": Have a lot of children and grandchildren. ( repopolating ) ")
+
+        individual_crossed = []
+        for _ in range(int(self.n_to_crossover/2)):
+            first = random.choice(selected)
+            temp_selected = np.delete(selected, np.where(selected == first))
+            second = random.choice(temp_selected)
+
+            individual_crossed.extend( self.crossover(self.create_individual_filepath(first), self.create_individual_filepath(second)) )
+
         for i in range(self.n_popolation):
             # I just skipt the number of the ones selected, so I don't have to rename or think to much about it
             if i in selected:
                 continue
 
-            # TODO CREATE THE NEW INDIVIDUALS FROM THE SELECTED ONES, HERE! : S
-            self.create_individual(self.create_individual_filepath(random.choice(selected)), i)
+            if len(individual_crossed) > 0:
+                self.close_motion_file(individual_crossed.pop(), self.popolation_folder + self.individual_prename + str(i) + self.individual_file_format)
+            else: # random mutation
+                self.create_mutated_individual(self.create_individual_filepath(random.choice(selected)), i)
 
         self.next_gen(selected)
 
@@ -73,9 +85,9 @@ class God:
         print(
             ": Let the waters bring forth abundantly the moving creature that hath life ( initialization of the popolation )")
         for i in range(self.n_popolation):
-            self.create_individual(self.adamo_filepath, i)
+            self.create_mutated_individual(self.adamo_filepath, i)
 
-    def create_individual(self, start_filename, i):
+    def create_mutated_individual(self, start_filename, i):
         adamo = self.open_motion_file(start_filename)
 
         probability_to_change = 0.04
@@ -85,6 +97,8 @@ class God:
         # to evolve only some columns
         if self.evolve_row_from_to[1] < 0:
             to = len(adamo) + self.evolve_row_from_to[1]
+        elif self.evolve_row_from_to[1] == 0:
+            to = len(adamo)
         else:
             to = self.evolve_row_from_to[1]
 
@@ -122,6 +136,35 @@ class God:
                         adamo[i_row + 1][col] = str(float(adamo[i_row + 1][col]) + change / 2)
 
         self.close_motion_file(adamo, self.popolation_folder + self.individual_prename + str(i) + self.individual_file_format)
+
+    # CROSSOVER!!
+    def crossover(self, ind1, ind2):
+        mot1 = self.open_motion_file(ind1)
+        mot2 = self.open_motion_file(ind2)
+
+        # to evolve only some columns
+        if self.evolve_row_from_to[1] < 0:
+            to = len(mot1) + self.evolve_row_from_to[1]
+        elif self.evolve_row_from_to[1] == 0:
+            to = len(mot1)
+        else:
+            to = self.evolve_row_from_to[1]
+
+
+        # let's mix it up
+        if random.uniform(0, 1) < 0.5: # let's randomize completely the mix or let's do as chunks, 0.5
+            for column in self.column_to_evolve:
+                for row in range(self.evolve_row_from_to[0], to+1):
+                    if random.uniform(0, 1) < 0.5:
+                        mot1[row][column], mot2[row][column] = mot2[row][column], mot1[row][column]
+        else: # change from point
+            split_point = random.choice(range(self.evolve_row_from_to[0], to + 1))
+
+            for row in range(split_point, to+1):
+                mot1[row], mot2[row] = mot2[row], mot1[row]
+
+
+        return mot1, mot2
 
     def delete_not_selected(self, selected):
         print(": The end is now upon you. ( selection of the best ones )")
@@ -192,7 +235,7 @@ class God:
     # create a backup in data/backup
     def backup(self):
         timestr = time.strftime("%Y%m%d-%H%M%S")
-        backup_dst = self.backup_folder + timestr + "_generation_"+ self.n_generation + " best: " + str(self.scores.index(max(self.scores)))
+        backup_dst = self.backup_folder + timestr + "_generation_"+ str(self.n_generation) + " best_" + str(self.scores.index(max(self.scores)))
         backup_dst_pop = backup_dst + "/popolation/"
 
         if not os.path.exists(self.backup_folder):
@@ -420,6 +463,7 @@ class Driver (Supervisor):
 
         avg_speed = self.speed_sum / self.speed_count
 
+        print("Max Speed: "+ str(self.speed_max))
 
         score =  goal_score * avg_speed * 10 * self.speed_max / fallen_score # (10000*self.max_y_ball + 1) *
         return score
@@ -514,6 +558,7 @@ class motion_util:
                 remaining = 0
                 for ir in range(1, len(motion)):
                     motion[ir][ic] += remaining
+                    remaining = 0
                     # make them respect the min and max limits
                     if motion[ir][ic] < self.limits[part_name_index][1]:
                         motion[ir][ic] = self.limits[part_name_index][1]
@@ -550,13 +595,13 @@ class motion_util:
 
 
 # util = motion_util()
-# util.open(r"C:\Users\_Apoleo\Dropbox\Universita2018\Progetto Nao\webots\Kira rep\nao-kicking-a-ball\motions\handCraftedKick.motion")
+# util.open(r"../../motions/Shoot.motion")
 # util.respect_limits()
 
 controller = Driver()
 controller.initialization()
 controller.run()
-# controller.only_run(21)
+# controller.only_run(35)
 
 # controller.run_original()
 # controller.run_the_best()
