@@ -20,13 +20,8 @@ class God:
     epsilon = 0.1
     initial_filepath = "../../motions/handCraftedKick.motion"
     n_generation = 0
-    
+
     def __init__(self):
-        fitness_file = self.open_motion_file(self.generations_folder + "fitness.txt")
-        plt.plot([float(item[0]) for item in fitness_file], [float(item[1]) for item in fitness_file])
-        plt.ylabel('fitness')
-        plt.xlabel('generations')
-        plt.show()
         self.popolate()
         self.scores = [0] * self.n_popolation
         self.current_individual = 0
@@ -42,7 +37,7 @@ class God:
     def get_policy(self, filepath):
         motion_file = self.open_motion_file(filepath)
         parameters = [0,0,0,0,0,0,0,0]
-        # 1. param: pull left knee up 
+        # 1. param: pull left knee up
         parameters[0] = float(motion_file[21][11])
         # 2. param: pull left hip up
         parameters[1] = float(motion_file[22][10])
@@ -58,9 +53,9 @@ class God:
         parameters[6] = float(motion_file[25][10])
         # 8. param: strech left foot
         parameters[7] = float(motion_file[25][12])
-        
+
         return parameters
-        
+
     def create_perturbation_motions(self, policy):
         next_perturbations = self.get_random_perturbations(policy)
         for i in range(self.n_popolation):
@@ -85,7 +80,7 @@ class God:
 
             # now repopulate
             self.repopolate()
-            
+
         # kill the individual not selected, and repopolate
     def repopolate(self):
         gradient = np.zeros((self.num_parameters))
@@ -105,23 +100,23 @@ class God:
             if ( plus > zero or minus > zero ):
                 gradient[i] = plus - minus
         return gradient
-                
+
     def get_avg_plus(self, i):
         plus_group = []
         for j in range(self.num_perturbations):
             if self.epsilons[j,i] > 1/3*self.epsilon:
                plus_group.append(self.scores[j])
         avg_plus = sum(plus_group)/len(plus_group)
-        return avg_plus                
-                    
+        return avg_plus
+
     def get_avg_zero(self, i):
         zero_group = []
         for j in range(self.num_perturbations):
             if self.epsilons[j,i] > -1/3*self.epsilon and self.epsilons[j,i] < 1/3*self.epsilon:
                zero_group.append(self.scores[j])
         avg_zero = sum(zero_group)/len(zero_group)
-        return avg_zero                
-        
+        return avg_zero
+
     def get_avg_minus(self, i):
         minus_group = []
         for j in range(self.num_perturbations):
@@ -132,19 +127,25 @@ class God:
 
     # are you passing to the next generation? then you should reinitialize some variables...
     def next_gen(self):
+        if self.n_generation > 100:
+            fitness_file = self.open_motion_file(self.generations_folder + "fitness.txt")
+            plt.plot([float(item[0]) for item in fitness_file], [float(item[1]) for item in fitness_file])
+            plt.ylabel('fitness')
+            plt.xlabel('generations')
+            plt.show()
         self.current_individual = 1
-        
+
         scores = self.scores # backup
         fitness_file = self.open_motion_file(self.generations_folder + "fitness.txt")
         fitness_file.append([str(self.n_generation), str(max(scores))])
         self.close_motion_file(fitness_file, self.generations_folder + "fitness.txt")
         self.scores = [0] * self.n_popolation # reset to zero the score array
 
-    
+
     def create_individual(self, parameters, i):
         motion_file = self.open_motion_file(self.initial_filepath)
-        
-        # 1. param: pull left knee up 
+
+        # 1. param: pull left knee up
         motion_file[21][11] = str(parameters[0])
         # 2. param: pull left hip up
         motion_file[22][10] = str(parameters[1])
@@ -165,7 +166,7 @@ class God:
             os.makedirs(new_file_folder)
         new_file_name = new_file_folder + self.individual_prename + str(i) + self.individual_file_format
         self.close_motion_file(motion_file, new_file_name)
-        
+
     def get_generation_folder(self):
         return "generation" + str(self.n_generation) + "/"
 
@@ -229,12 +230,12 @@ class Driver (Supervisor):
         self.t_ball = self.ball.getField('translation')
         self.keyboard.enable(self.timeStep)
         self.keyboard = self.getKeyboard()
-        
+
         # Store initial coordinates of ball
         self.old_ball_pos = self.ball.getPosition() # 0 is x, 2 is z
         # Store initial distance from the door
         self.start_distance = self.distance_ball_goal()# self.football_goal_point.distance(Point(self.old_ball_pos[0], self.old_ball_pos [2]))
-        
+
         # Store the initial y
         self.init_y = self.t_nao.getSFVec3f()[1]
 
@@ -372,7 +373,7 @@ class Driver (Supervisor):
         avg_speed = self.speed_sum / self.speed_count
         score = goal_score * avg_speed*10 * self.speed_max / fallen_score
         return score
-            
+
 
 controller = Driver()
 controller.initialization()

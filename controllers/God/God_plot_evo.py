@@ -29,11 +29,6 @@ class God:
     evolve_row_from_to = [60, -20]  # start, at least 1, since the first row is the title in the motion file
 
     def __init__(self, godFile):
-       # fitness_file = self.open_motion_file(self.population_folder + "fitness_evolution.txt")
-       # plt.plot([float(item[0]) for item in fitness_file], [float(item[1]) for item in fitness_file])
-       # plt.ylabel('fitness')
-       # plt.xlabel('generations')
-       # plt.show()
         print(": I am the Alpha and the Omega ( Initialized the God.py )")
         self.godFile = godFile
         self.motion_util = motion_util()
@@ -45,6 +40,12 @@ class God:
 
     # are you passing to the next generation? then you should reinitialize some variables...
     def next_gen(self, selected):
+        if self.n_generation > 100:
+            fitness_file = self.open_motion_file(self.population_folder + "fitness_evolution.txt")
+            plt.plot([float(item[0]) for item in fitness_file], [float(item[1]) for item in fitness_file])
+            plt.ylabel('fitness')
+            plt.xlabel('generations')
+            plt.show()
         self.n_generation += 1
         self.current_individual = 1
 
@@ -713,7 +714,7 @@ class motion_util:
         plt.ylabel('rads')
         plt.xlabel('time')
         plt.show()
-    
+
 # util = motion_util()
 # util.open(r"../../motions/Shoot.motion")
 # util.plot_motion(6)
