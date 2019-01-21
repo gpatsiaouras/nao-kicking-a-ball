@@ -112,6 +112,8 @@ if __name__ == "__main__":
 				mover.move(ROTATELEFT)
 			elif key == 'd':
 				mover.move(ROTATERIGHT)
+			elif key == 's':
+				posture_proxy.goToPosture("StandInit", 1)
 			elif key == 'h':
 				print_instructions()
 			elif key == 'k':
