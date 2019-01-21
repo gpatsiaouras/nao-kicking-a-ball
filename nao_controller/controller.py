@@ -72,12 +72,13 @@ class Mover:
 
 def print_instructions():
 	print("Instructions of use:\
-		\n\tArrow Up: Move forward\
-		\n\tArrow Down: Move backwards\
-		\n\tArrow Left: Move Sideways Left\
-		\n\tArrow Right: Move Sideways Right\
+		\n\tUp: Move forward\
+		\n\tDown: Move backwards\
+		\n\tLeft: Move Sideways Left\
+		\n\tRight: Move Sideways Right\
 		\n\tKey A: Rotate Anticlockwise\
 		\n\tKey D: Rotate Clockwise\
+		\n\tKey S: Go to posture StandInit\
 		\n\tKey K: Kick\
 		\n\tKey H: Display Help\
 	")
