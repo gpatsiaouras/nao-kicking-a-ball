@@ -19,14 +19,23 @@ class God:
     backup_folder = "../../data/backup/"
     adamo_filepath = "../../motions/Shoot_corrected.motion"
 
+
     n_population = 100
     n_to_select = 10
     n_to_crossover = 40 # need to be an even number
 
     # motion file info/settings
     # 11 = LAnkleRoll
-    column_to_evolve = [6, 7, 8, 9, 10]
+    column_to_evolve = [6, 7, 8, 9, 10] # LHipYawPitch,LHipRoll,LHipPitch,LKneePitch,LAnklePitch
     evolve_row_from_to = [70, -20]  # start, at least 1, since the first row is the title in the motion file
+
+
+    def plot_it(self):
+        plt.plot(self.max_scores)
+        plt.ylabel('fitness')
+        plt.xlabel('generations')
+        plt.show()
+        # plt.show(block=False)
 
     def __init__(self, godFile):
         print(": I am the Alpha and the Omega ( Initialized the God.py )")
@@ -36,6 +45,7 @@ class God:
         self.reset_all_score()
         self.current_individual = 0
         self.n_generation = 1
+        self.max_scores = [] # each generation
 
     # are you passing to the next generation? then you should reinitialize some variables...
     def next_gen(self, selected):
@@ -43,6 +53,9 @@ class God:
         self.current_individual = 1
 
         scores = self.scores  # backup
+
+        self.max_scores.append(max(scores))
+
         self.scores = [0] * self.n_population  # reset to zero the score array
 
         # Now I put the score back to the selected ones, so they will not be retested!
@@ -332,9 +345,15 @@ class Driver (Supervisor):
                 num) + self.god.individual_file_format)
         self.run_motion_file(motion_file_evaluated)
 
-    def run_the_best(self):
+    def best_one(self):
         max_score = max(self.god.scores)
         i_best = self.god.scores.index(max_score)
+
+        return i_best, max_score
+
+    def run_the_best(self):
+        i_best, max_score = self.best_one()
+        
         print("The best one was " + str(i_best) + " (from 0 to x) with a score of " + str(max_score))
         self.only_run(i_best)
 
@@ -584,10 +603,6 @@ class motion_util:
                             if motion[ir][ic] - old_value < 0:
                                 sign = -1
                             new_value = old_value + sign * time_difference * self.limits[part_name_index][5] *0.999 # 0.99 just for approximation errors : S
-                            # print("----------")
-                            # print(old_value)
-                            # print(motion[ir][ic])
-                            # print(new_value)
                             remaining = motion[ir][ic] - new_value
                             motion[ir][ic] = new_value
 
