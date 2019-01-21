@@ -1,17 +1,26 @@
 from controller import Robot, Accelerometer, Camera, DistanceSensor, \
                        GPS, Gyro, InertialUnit, Keyboard, LED, Motion, \
                        Motor, TouchSensor
+import sys
 
 # this is the main class
 class Nao (Robot):
     PHALANX_MAX = 8
+    _first = True
 
 
     def receive_motion_file(self):
         if self.receiver.getQueueLength() > 0:
-             return self.receiver.getData().decode('utf-8')
+            message = self.receiver.getData().decode('utf-8')
+            if message == "Sacrifice yourself in My Name!":
+                print("This wasn't real anyway... ( Nao Controller exited )")
+                sys.exit(0)
+            # print("Yes, my Lord.")
+            return message
         else:
-            print("No signs from God... does her exist?")
+            if self._first:
+                print("No signs from God... does she exist?")
+                self._first = False
             return False
 
 
@@ -288,18 +297,20 @@ class Nao (Robot):
         # self.handWave.setLoop(False)
 
 
-        motion_file = False
+        self.motion_file = False
         played = False
         while True:
-            if not motion_file:
-                motion_file = self.receive_motion_file()
-            if motion_file and not played:
-                self.startMotion(Motion(motion_file))
+            if not self.motion_file:
+                self.motion_file = self.receive_motion_file()
+            if self.motion_file and not played:
+                self.startMotion(Motion(self.motion_file))
                 played = True
 
             if robot.step(self.timeStep) == -1:
                 break
 
+    def reset(self):
+        self.motion_file = False
 
 # create the Robot instance and run main loop
 robot = Nao()

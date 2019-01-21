@@ -17,8 +17,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation 0.026805532978823005 0.9850481766370833 0.1701809422517069 3.1834596779496938
-  position -4.006469109726029 1.2477234067994134 -3.753148149682644
+  orientation 0.06982673470506043 0.9923789806136721 0.10152923695467268 3.9339312663758856
+  position 0.030636998451038622 1.302723787304514 -3.03664409913589
 }
 Background {
   skyColor [
@@ -28,9 +28,18 @@ Background {
     textureBaseName "noon_sunny_empty"
   }
 }
+TexturedBackgroundLight {
+}
+RobotstadiumSoccerField {
+  frame1Color 0.9 0.8 0.2
+  frame2Color 0.2 0.4 0.8
+}
+DEF Ball Ball {
+  translation 1.7475012217063626 0.03239206322777712 0.03818880504172611
+}
 DEF NAO Robot {
-  translation -3.9552374485964714 0.30862 0.0611046
-  rotation 0.9995610905844422 -0.020496920951108617 0.02138930623383478 -1.5713480295920719
+  translation 1.575213448766519 0.295824091417527 0.08150151176198768
+  rotation -0.9996301278576762 -0.02049557511439777 -0.017875650477009983 1.5728255429791096
   children [
     DEF receiver Receiver {
     }
@@ -511,7 +520,7 @@ DEF NAO Robot {
       ]
       endPoint Solid {
         translation 0 -0.098 0.1
-        rotation -0.17273121890155385 0.9797964162665553 -0.10081125278458924 2.102681239660752
+        rotation -0.17273121890054063 0.9797964162667948 -0.10081125278399788 2.102681239660541
         children [
           Transform {
             translation 0.005 0 0
@@ -639,7 +648,7 @@ DEF NAO Robot {
                               ]
                               endPoint Solid {
                                 translation 0.069 -0.013 -0.005
-                                rotation 0 1 0 0.9599999980903261
+                                rotation 0 1 0 0.9599990001167339
                                 children [
                                   DEF HAND_SLOT Transform {
                                     rotation 0 -1 0 0.96
@@ -678,7 +687,7 @@ DEF NAO Robot {
                                     ]
                                     endPoint Solid {
                                       translation 0.014 0 0
-                                      rotation 0 1 0 0.9599999990370092
+                                      rotation 0 0.9999999999999999 0 0.9599994957891376
                                       children [
                                         USE PHALANX_TRANS
                                         DEF RPhalanx3 HingeJoint {
@@ -698,7 +707,7 @@ DEF NAO Robot {
                                           ]
                                           endPoint Solid {
                                             translation 0.014 0 0
-                                            rotation 0 1 0 0.9599999997632047
+                                            rotation 0 1 0 0.9599998760166844
                                             children [
                                               USE PHALANX_TRANS
                                             ]
@@ -742,7 +751,7 @@ DEF NAO Robot {
                               ]
                               endPoint Solid {
                                 translation 0.069 0.013 -0.005
-                                rotation 0 1 0 0.9600000019085206
+                                rotation 0 1 0 0.9600009992788583
                                 children [
                                   USE PHALANX_TRANS
                                   DEF RPhalanx5 HingeJoint {
@@ -762,7 +771,7 @@ DEF NAO Robot {
                                     ]
                                     endPoint Solid {
                                       translation 0.014 0 0
-                                      rotation 0 1 0 0.9599999990399929
+                                      rotation 0 1 0 0.9599994973512983
                                       children [
                                         USE PHALANX_TRANS
                                         DEF RPhalanx6 HingeJoint {
@@ -782,7 +791,7 @@ DEF NAO Robot {
                                           ]
                                           endPoint Solid {
                                             translation 0.014 0 0
-                                            rotation 0 1 0 0.9599999997620031
+                                            rotation 0 1 0 0.9599998753875306
                                             children [
                                               USE PHALANX_TRANS
                                             ]
@@ -843,7 +852,7 @@ DEF NAO Robot {
                                     ]
                                     endPoint Solid {
                                       translation 0.014 0 0
-                                      rotation 0 -1 0 0.9599999997567225
+                                      rotation 0 -1 0 0.959999872622481
                                       children [
                                         USE PHALANX_TRANS
                                       ]
@@ -1060,7 +1069,7 @@ DEF NAO Robot {
       ]
       endPoint Solid {
         translation 0 0.098 0.1
-        rotation 0.17273121947254846 0.9797964161317181 0.10081125311674037 2.102681239788753
+        rotation 0.17273121947311676 0.9797964161315839 0.10081125311707205 2.1026812397888706
         children [
           Transform {
             translation 0.005 0 0
@@ -1186,7 +1195,7 @@ DEF NAO Robot {
                               ]
                               endPoint Solid {
                                 translation 0.069 -0.013 -0.005
-                                rotation 0 0.9999999999999999 0 0.9600000019118722
+                                rotation 0 1 0 0.960001001033641
                                 children [
                                   DEF HAND_SLOT Transform {
                                     rotation 0 -1 0 0.96
@@ -1225,7 +1234,7 @@ DEF NAO Robot {
                                     ]
                                     endPoint Solid {
                                       translation 0.014 0 0
-                                      rotation 0 1 0 0.9599999990204152
+                                      rotation 0 0.9999999999999999 0 0.959999487100715
                                       children [
                                         USE PHALANX_TRANS
                                         DEF LPhalanx3 HingeJoint {
@@ -1246,7 +1255,7 @@ DEF NAO Robot {
                                           ]
                                           endPoint Solid {
                                             translation 0.014 0 0
-                                            rotation 0 1 0 0.9600000002361989
+                                            rotation 0 1 0 0.960000123670853
                                             children [
                                               USE PHALANX_TRANS
                                             ]
@@ -1290,7 +1299,7 @@ DEF NAO Robot {
                               ]
                               endPoint Solid {
                                 translation 0.069 0.013 -0.005
-                                rotation 0 1 0 0.9600000019116769
+                                rotation 0 1 0 0.9600010009330641
                                 children [
                                   USE PHALANX_TRANS
                                   DEF LPhalanx5 HingeJoint {
@@ -1310,7 +1319,7 @@ DEF NAO Robot {
                                     ]
                                     endPoint Solid {
                                       translation 0.014 0 0
-                                      rotation 0 1 0 0.9599999990203171
+                                      rotation 0 0.9999999999999999 0 0.9599994870493549
                                       children [
                                         USE PHALANX_TRANS
                                         DEF LPhalanx6 HingeJoint {
@@ -1331,7 +1340,7 @@ DEF NAO Robot {
                                           ]
                                           endPoint Solid {
                                             translation 0.014 0 0
-                                            rotation 0 1 0 0.9600000002361662
+                                            rotation 0 1 0 0.9600001236537329
                                             children [
                                               USE PHALANX_TRANS
                                             ]
@@ -1391,7 +1400,7 @@ DEF NAO Robot {
                                     ]
                                     endPoint Solid {
                                       translation 0.014 0 0
-                                      rotation 0 -1 0 0.9599999997642736
+                                      rotation 0 -1 0 0.9599998765766568
                                       children [
                                         USE PHALANX_TRANS
                                       ]
@@ -2500,7 +2509,7 @@ DEF NAO Robot {
       ]
     }
   ]
-  name "NAO RED 0(1)"
+  name "NAO RED 0"
   model "NAO_H25_V50"
   contactMaterial "NAO material"
   boundingObject Transform {
@@ -2524,14 +2533,7 @@ DEF NAO Robot {
       1.43116e-05 0.000155191 -2.70793e-05
     ]
   }
-  controller ""
-}
-RobotstadiumSoccerField {
-  frame1Color 0.9 0.8 0.2
-  frame2Color 0.2 0.4 0.8
-}
-DEF Ball Ball {
-  translation -3.7715665552743847 0.03450118888167553 0.01073054622214912
+  controller "Nao_Controller"
 }
 Robot {
   children [
