@@ -10,7 +10,7 @@ from shutil import copyfile
 from distutils.dir_util import copy_tree
 from copy import deepcopy
 
-
+# RL VERSION
 class God:
     generations_folder = "../../data/generations/"
     individual_prename = "ind_"
@@ -20,7 +20,7 @@ class God:
     current_policy = []
     n_popolation = 100
     num_perturbations = n_popolation
-    epsilon = 0.1
+    epsilon = 0.15
     initial_filepath = "../../motions/Shoot_copy_corrected.motion"
     fitness_filepath = generations_folder + "fitness.txt"
     # initial_filepath = "../../motions/handCraftedKick.motion"
@@ -319,6 +319,9 @@ class Driver (Supervisor):
 
         # let's ask god what motion do
         motion_file_evaluated = self.god.next_motion_filename().encode('utf-8')
+
+        print("simulating:    MAX_SCORE -> " + str(max(self.god.scores)) + "(ind " + str(
+            self.god.scores.index(max(self.god.scores))) + " )")
 
         if not os.path.exists(motion_file_evaluated):
             print (motion_file_evaluated)
@@ -667,8 +670,9 @@ class motion_util:
 controller = Driver()
 controller.initialization()
 # controller.run()
-
-controller.god.plot_it()
+#
+print(controller.god.max_scores)
+# controller.god.plot_it()
 # print("Scores:")
 # print(controller.god.max_scores)
 # plt.show()
@@ -676,4 +680,4 @@ controller.god.plot_it()
 # controller.only_run(21)
 
 # controller.run_original()
-# controller.run_the_best()
+controller.run_the_best()
