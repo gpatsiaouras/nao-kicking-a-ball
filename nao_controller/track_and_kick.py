@@ -41,10 +41,13 @@ class TrackAndKick():
 					print("Lost Target")
 				else:
 					print self.tracker.getTargetPosition()
-					if self.tracker.getTargetPosition()[0] < 7:
-						print("Closer than 30cm")
-						self.motion.stopMove()
+					# if self.tracker.getTargetPosition()[0] < 7:
+					# 	print("Closer than 30cm")
+					# 	self.motion.stopMove()
+					# 	break
 				time.sleep(1)
+			# TODO Perform Kick. Supposedly the robot is aligned. 
+			# TODO Or try to align the robot with the ball in front of his left foot
 		except KeyboardInterrupt:
 			print
 			print "Interrupted by user"
