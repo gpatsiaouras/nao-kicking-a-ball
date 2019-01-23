@@ -47,3 +47,17 @@ The Reinforcement Learning approach born with an handCraftedKick.motion and then
 There is two worlds, the nao_robocup_long.wbt is a difference start, more far from the door, that was the one initially used with handCraftedKick.motion
 
 Doesn't implement a backup function as evolution code does, but instead save each generation, if restarted, will overwrite all the generations, one by one. It doesn't backup the god.npy file
+
+# How to test in Real Robot
+
+## Software Description
+Located in the folder nao_controller we can find the controller.py, which can be executed by running the following command:
+
+      python2.7 controller.py --ip <ip-of-robot> --port <port-of-robot>
+
+In order to use you need to install this libraries by running:
+
+      pip install getkey
+      pip install argparse
+
+> Also the naoqi library SDK should be included in the PYTHONPATH environmental variable
