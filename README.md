@@ -37,7 +37,7 @@ Other function can be executed like:
 		controller.run_original() # run the original motion file
 		controller.run_the_best() # run the best child # this could be not available in RL
 	
-# Algorithms
+# Differences in the implementations
 ## Evolution:
 The evolution implement a different backup function, every tot generations.
 	
