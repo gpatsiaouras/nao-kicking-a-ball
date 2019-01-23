@@ -79,8 +79,11 @@ def print_instructions():
 		\n\tKey A: Rotate Anticlockwise\
 		\n\tKey D: Rotate Clockwise\
 		\n\tKey S: Go to posture StandInit\
-		\n\tKey K: Kick Shoot_corrected\
-		\n\tKey J: Kick Jonas_corrected motion\
+		\n\tKey K: Kick Original\
+		\n\tKey L: Evolution Algorithm Kick\
+		\n\tKey O: Reinforcement Learning Kick\
+		\n\tKey P: Handcrafted kick\
+		\n\tKey I: Interpolated Kick\
 		\n\tKey H: Display Help\
 	")
 
@@ -120,26 +123,23 @@ if __name__ == "__main__":
 				print_instructions()
 			elif key == 'k':
 				motion_proxy.stopMove()
-				mover.perform_move_from_motion_file("Kick", "../motions/Shoot_corrected.motion", True)
-			elif key == 'j':
-				motion_proxy.stopMove()
-				mover.perform_move_from_motion_file("Kick", "../motions/jonas_corrected.motion", True)
+				mover.perform_move_from_motion_file("Kick", "../motions/Shoot.motion", True)
 			elif key == 'l':
-				print("evo andrea")
+				print("Evolution Algorithm Kick")
 				motion_proxy.stopMove()
-				mover.perform_move_from_motion_file("Kick", "../motions/evo_andrea.motion", True)
+				mover.perform_move_from_motion_file("Kick", "../motions/evolution_algorithm_kick.motion", True)
 			elif key == 'o':
-				print("rel andrea")
+				print("Reinforcement Learning Kick")
 				motion_proxy.stopMove()
-				mover.perform_move_from_motion_file("Kick", "../motions/rel_andrea_corrected.motion", True)
+				mover.perform_move_from_motion_file("Kick", "../motions/reinforcement_learning.motion", True)
 			elif key == 'p':
 				print("Handcrafted kick")
 				motion_proxy.stopMove()
 				mover.perform_move_from_motion_file("Kick", "../motions/handCraftedKick.motion", False)
 			elif key == 'i':
-				print("Jonas interpolated")
+				print("Interpolated Kick")
 				motion_proxy.stopMove()
-				mover.perform_move_from_motion_file("Kick", "../motions/jonas_interpolated_corrected.motion", True)
+				mover.perform_move_from_motion_file("Kick", "../motions/interpolated_kick.motion", True)
 			else:
 				print("Move interrupted")
 				motion_proxy.stopMove()
